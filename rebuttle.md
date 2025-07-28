@@ -1,6 +1,6 @@
-Reviewer1 TDN5
-1. Weaknesses1【done】: a) The success of the entire workflow is highly dependent on the initial "Repository Search" stage. This stage relies on analyzing user intent, README files, and star counts. The paper could benefit from a deeper discussion of the limitations of this search phase and how the agent might recover if an unsuitable repository is initially selected.
-1.1 ZH
+# Reviewer1 TDN5
+## 1. Weaknesses1【done】: a) The success of the entire workflow is highly dependent on the initial "Repository Search" stage. This stage relies on analyzing user intent, README files, and star counts. The paper could benefit from a deeper discussion of the limitations of this search phase and how the agent might recover if an unsuitable repository is initially selected.
+### 1.1 ZH
 感谢您的深刻见解。我们承认，存储库搜索阶段对于我们框架的成功至关重要。为了解决这一问题，我们实施了以下几种机制：
 1. 基于“搜索与思考”范式的高级搜索策略 我们开发了一种复杂的深度搜索机制，它采用迭代的“搜索与思考”方法，而非依赖于单次搜索尝试。在每次搜索迭代中，代理：
 a. 根据搜索和分析结果动态地制定和改进搜索查询
@@ -24,12 +24,37 @@ When execution failures occur, our Schedule Agent coordinates these specialized 
 
 这种自适应多代理方法确保系统能够从各种故障模式中恢复，从简单的依赖问题到基本的存储库不匹配，从而显著增强了框架的实际适用性。
 
-1.2 EN
+### 1.2 EN
+
+Thank you for your insightful feedback. We acknowledge that the repository search stage is critical to our framework's success. To address this concern, we have implemented several mechanisms:
+
+1. **Advanced Search Strategy Based on "Search and Think" Paradigm**: We developed a sophisticated deep search mechanism that employs an iterative "search and think" approach rather than relying on single search attempts. In each search iteration, the agent:
+   a. Dynamically formulates and refines search queries based on search and analysis results
+   b. Performs real-time relevance assessment while browsing repository content
+   c. Maintains a ranked list of top-k candidate repositories with confidence scores
+
+This cognitive search process mimics how human developers explore GitHub, progressively deepening understanding through active exploration rather than passive filtering.
+
+2. **Robust Recovery through Comprehensive Multi-Agent Architecture**: To handle cases of selecting unsuitable repositories, we designed a hierarchical multi-agent system with specialized recovery agents:
+   - Schedule Agent (Orchestrator)
+   - ├── DeepSearch Agent: Repository discovery and ranking
+   - ├── Code Agent: Task execution with repository
+   - ├── Issue Fix Agent: Analyzes GitHub issues for known problems/solutions
+   - ├── Dependency Agent: Handles environment setup and dependency conflicts
+
+When execution failures occur, our Schedule Agent coordinates these specialized agents.
+
+3. When the Code Agent encounters execution failures (e.g., dependency conflicts, API mismatches, missing functionality), our Schedule Agent automatically:
+   (i) Analyzes failure patterns to generate structured feedback
+   (ii) Adjusts selection criteria based on the failure mode (e.g., if a computer vision task fails due to missing GPU support, it prioritizes CPU-compatible alternatives)
+   (iii) Seamlessly switches to the next candidate repository
+
+This adaptive multi-agent approach ensures the system can recover from various failure modes, from simple dependency issues to fundamental repository mismatches, significantly enhancing the framework's practical applicability.
 
 
-2. Weaknesses2【done】: b) The initial "Hierarchical Repository Analysis" involves parsing all source files to build ASTs, dependency graphs, and call graphs. While effective, the paper does not discuss the computational cost or time required for this preprocessing step.
+## 2. Weaknesses2【done】: b) The initial "Hierarchical Repository Analysis" involves parsing all source files to build ASTs, dependency graphs, and call graphs. While effective, the paper does not discuss the computational cost or time required for this preprocessing step.
 
-2.1 ZH
+### 2.1 ZH
 感谢您的深刻见解。您说得完全正确，预处理步骤的计算成本值得更详细的讨论。我们将在修订版和附录中添加这方面的全面实验数据。
 我们的静态分析预处理流程，利用高度优化的库（例如，用于 AST 解析的 tree-sitter）并支持多线程执行。对于典型的存储库（1-5k 个文件） ：整个预处理平均在 4.8 秒内完成，其中包括：
 1. AST 构建：~2.1 秒（跨 CPU 核心并行）
@@ -39,11 +64,24 @@ When execution failures occur, our Schedule Agent coordinates these specialized 
 复杂存储库的附加处理：
 对于核心组件超过上下文阈值（8k 个 token）的存储库，我们采用基于 LLM 的摘要方法，使用 Deepseek V3 时，耗时约 10 秒。即使对于复杂的存储库，整体预处理时间也保持在 15 秒以内。
 
-2.2 EN
+### 2.2 EN
 
-3. Weaknesses3【done】: c) The module-level importance scoring aggregates six features using equal weights. This seems somewhat arbitrary. The paper would be strengthened by a sensitivity analysis on these weights or a more principled method for determining them.
+Thank you for your insightful feedback. You are absolutely correct that computational costs of preprocessing steps deserve more detailed discussion. We will add comprehensive experimental data on this aspect in the revision and appendix.
 
-3.1 ZH
+Our static analysis preprocessing pipeline leverages highly optimized libraries (e.g., tree-sitter for AST parsing) and supports multi-threaded execution. For typical repositories (1-5k files): the entire preprocessing completes in an average of 4.8 seconds, including:
+
+1. AST construction: ~2.1 seconds (parallelized across CPU cores)
+2. Dependency/call graph generation: ~1.9 seconds  
+3. Core component identification: ~0.8 seconds
+
+**Additional processing for complex repositories:**
+For repositories where core components exceed context thresholds (8k tokens), we employ LLM-based summarization approaches, taking approximately 10 seconds when using Deepseek V3. Even for complex repositories, overall preprocessing time remains under 15 seconds.
+
+This preprocessing cost is amortized across multiple task attempts within the same repository and represents a one-time investment that significantly improves subsequent exploration efficiency, as demonstrated by our 95% token reduction compared to baseline methods.
+
+## 3. Weaknesses3【done】: c) The module-level importance scoring aggregates six features using equal weights. This seems somewhat arbitrary. The paper would be strengthened by a sensitivity analysis on these weights or a more principled method for determining them.
+
+### 3.1 ZH
 感谢建议，非常同意，我们确实应该展开介绍一下我们模块级重要性评分的实验分析过程，我们将在后续论文附录中补充介绍实验细节。
 
 首先我们人为构建了几个仓库的核心文件模块作为我们的测试集，然后通过repomaster中的不同权重组合策略的表现来针对性优化，来提升重要文件集的召回率。
@@ -55,12 +93,23 @@ When execution failures occur, our Schedule Agent coordinates these specialized 
 实验表明，Top-20能够在召回率和效率之间达到良好平衡，进一步增加k值带来的收益递减。
 
 关于整体效果的权重敏感性分析，考虑到实验的时间成本较大，我们并没有系统地做一些定量分析，在后续的论文版本中我们可以补充更全面的实验分析结果。此外，我们想详细介绍的是：在我们整体算法框架设计中，评估得到的核心模块的作用是在有限的context窗口下，帮助agent对于整体仓库有一个全面的了解。这也是作为repomaster对整个仓库的自主探索入口，自主决策是否要从当前文件扩展搜索和阅读相邻节点的文件。定位到任务相关的代码片段或者文件信息后才送入Agent的context来完成搜索→理解→代码生成/编辑→执行→调试→生成可验证输出的端到端任务自主探索和执行。
-3.2 EN
+### 3.2 EN
+
+Thank you for the suggestion. We completely agree that we should provide more detailed discussion of our module-level importance scoring experimental analysis process, and we will supplement experimental details in the appendix of the subsequent paper.
+
+First, we manually constructed core file modules for several repositories as our test set, then optimized through different weight combination strategies in RepoMaster to improve the recall rate of important file sets. Through experimental comparison, we removed scores from evaluation dimensions with high overlap, then conducted simple ablation experiments on each single-dimensional strategy, finally retaining the six evaluation dimensions presented in the paper with equal weights.
+
+Additionally, we gradually increased the number of top-k modules, ultimately achieving 70% recall rate for core modules with top-20, with no significant recall improvement from further increasing top-k.
+
+**Top-k Module Recall Rate Experimental Results:**
+The experiments show that Top-20 achieves a good balance between recall and efficiency, with diminishing returns from further increasing k values.
+
+Regarding overall weight sensitivity analysis, considering the significant time cost of experiments, we did not systematically conduct quantitative analysis, but we can supplement more comprehensive experimental analysis results in future paper versions. Additionally, we want to detail that in our overall algorithm framework design, the core modules identified serve to help agents have comprehensive understanding of the entire repository within limited context windows. This also serves as RepoMaster's entry point for autonomous repository exploration, autonomously deciding whether to expand search and read adjacent node files from current files. Only after locating task-relevant code segments or file information are they fed into the Agent's context to complete the end-to-end autonomous exploration and execution of search→understand→code generation/editing→execution→debugging→generate verifiable output.
 
 
-Reviewer aqw3
-4. Weaknesses1【done】：Many of RepoMaster’s ideas e.g.repository graphs and context selection overlap with recent work. For example, the concurrent RepoGraph [1] system also builds a repository-level graph structure to guide LLM code agents. The CGM [2] approach similarly integrates a code graph into an LLM’s attention. RepoMaster’s novelty seems to lie mostly in the engineering of combining known techniques (AST traversal, call/dependency graphs, heuristic scoring) rather than introducing fundamentally new algorithms. As a result, its contribution feels somewhat incremental relative to these related methods.
-4.1 ZH
+# Reviewer aqw3
+## 4. Weaknesses1【done】：Many of RepoMaster's ideas e.g.repository graphs and context selection overlap with recent work. For example, the concurrent RepoGraph [1] system also builds a repository-level graph structure to guide LLM code agents. The CGM [2] approach similarly integrates a code graph into an LLM's attention. RepoMaster's novelty seems to lie mostly in the engineering of combining known techniques (AST traversal, call/dependency graphs, heuristic scoring) rather than introducing fundamentally new algorithms. As a result, its contribution feels somewhat incremental relative to these related methods.
+### 4.1 ZH
 感谢审稿人细致地指出与RepoGraph[1]和CGM[2]的关联。我们高度认可这些并行工作的贡献——RepoGraph作为可插拔模块有效提升了代码修复性能，CGM通过图注意力机制在SWE-bench-Lite上取得了优秀成果，我们也期待未来探索技术融合的可能性。
 但我们的RepoMaster与 RepoGraph/CGM 在任务问题定义、方法设计和技术贡献上存在本质差异：
 a.在任务层面我们面向真实、端到端任务，而非仅限代码修复。
@@ -84,12 +133,12 @@ MLE-R：有效提交率95.45%，获得奖牌率27.27%，相对最强基线提升
 
 [1] Ouyang, S., Yu, W., Ma, K., Xiao, Z., Zhang, Z., Jia, M., ... & Yu, D. (2024). RepoGraph: Enhancing AI Software Engineering with Repository-level Code Graph. arXiv preprint arXiv:2410.14684.
 [2] Tao, Hongyuan, et al. "Code Graph Model (CGM): A Graph-Integrated Large Language Model for Repository-Level Software Engineering Tasks." arXiv preprint arXiv:2505.16901 (2025).
-4.2 EN
+### 4.2 EN
 
 
-5. Weaknesses2【done】：The experiments only compare with OpenHands and SWE-Agent, but do not include newer repository-level methods like RepoGraph [1] or other Agents works, such as Agentless [3]. Adding such baselines would better position RepoMaster within the current literature.
+## 5. Weaknesses2【done】：The experiments only compare with OpenHands and SWE-Agent, but do not include newer repository-level methods like RepoGraph [1] or other Agents works, such as Agentless [3]. Adding such baselines would better position RepoMaster within the current literature.
 
-5.1 ZH
+### 5.1 ZH
 感谢审稿人的宝贵建议。我们完全认同可以与更多最新方法进行比较，以更全面地展示RepoMaster的定位。以下说明我们的基线选择理由，并承诺在修订版中加入与RepoGraph和Agentless的补充性实验结果与讨论。
 
 我们选择OpenHands和SWE-Agent作为主要基线基于以下考虑：
@@ -98,17 +147,17 @@ SOTA Agent框架：SWE‑bench leaderboard榜单均显示，这两个agent框架
 
 端到端能力的完整性：我们的任务设定要求在受控环境中对完整仓库进行搜索—理解-代码生成—执行—调试的端到端执行，并完成真实世界端到端任务，这对于Agent的综合能力有比较大的要求和挑战。在这一任务设定下，OpenHands 与 SWE‑agent 是目前开源社区中最常用、最成熟且在SWE-bench Verified公开榜单上长期占据前列的通用Agent系统，而repograph主要聚焦在代码修复任务上：即给定GitHub issue，在仓库内定位并修改代码以修复bug。
 
-5.2 EN
+### 5.2 EN
 
-6. Weaknesses3 & Limitations【Pending】：The proposed GitTaskBench contains only 18 repositories and 54 tasks (line 230-231). While it covers diverse domains, the relatively small size may limit the generality of the conclusions. A larger benchmark would better demonstrate the robustness of the method.
-
-
+## 6. Weaknesses3 & Limitations【Pending】：The proposed GitTaskBench contains only 18 repositories and 54 tasks (line 230-231). While it covers diverse domains, the relatively small size may limit the generality of the conclusions. A larger benchmark would better demonstrate the robustness of the method.
 
 
 
-7. Q1【done】: The implementation filters to Python files. Would the approach extend easily to, e.g., multi-language projects (C++, Java) on GitHub?
 
-7.1 ZH
+
+## 7. Q1【done】: The implementation filters to Python files. Would the approach extend easily to, e.g., multi-language projects (C++, Java) on GitHub?
+
+### 7.1 ZH
 我们感谢审稿人提出关于多语言项目（如 C++、Java）可扩展性的深刻问题
 
 我们的方法旨在与语言无关，并易于扩展到其他编程语言。 这里我们阐明了设计原理和可扩展性：
@@ -123,18 +172,18 @@ SOTA Agent框架：SWE‑bench leaderboard榜单均显示，这两个agent框架
 
 我们认同这是未来工作的一个重要方向，并计划在下一版本中将评估范围扩展到多语言存储库。RepoMaster 的模块化设计使此扩展变得简单易用，我们预计不同编程语言的性能提升也将类似。
 
-7.2 EN
+### 7.2 EN
 
 
-8. Q2【done】: Will the authors release the GitTaskBench tasks and code for RepoMaster?
+## 8. Q2【done】: Will the authors release the GitTaskBench tasks and code for RepoMaster?
 
-8.1 ZH
+### 8.1 ZH
 Hi, 感谢您的兴趣，。我们的GitTaskBench是已经开源的，且其的具体匿名链接时已经放入现在投稿的论文中的，作为参考文献【26】的形式给出。但是好像没有以footnote方式给出，可能让您没有注意到。详见参考文献【26】：GitTaskBench: Anonymous github repository. （关于GitTaskBench的所有tasks和code都在以上这个匿名的GitHub链接中。）
 此外，我们已经在github仓库上传了我们的RepoMaster项目代码，我们会在后续论文版本中同步开源。
-8.2 EN
+### 8.2 EN
 
-9. Q3【done】: How were the thresholds (e.g. top-20 modules, top-10 classes, context window sizes) chosen? Is performance sensitive to these?
-ZH
+## 9. Q3【done】: How were the thresholds (e.g. top-20 modules, top-10 classes, context window sizes) chosen? Is performance sensitive to these?
+### 9.1 ZH
 感谢建议，非常同意，我们确实应该展开介绍一下我们模块级重要性评分的实验分析过程，我们将在后续论文附录中补充介绍实验细节。
 1.首先我们人为构建了几个仓库的核心文件模块作为我们的测试集，然后通过repomaster中的不同权重组合策略的表现来针对性优化，来提升重要文件集的召回率。通过实验对比，我们去除了重合度比较高的几个评估维度的分数，然后我们对于这些每个单一维度的策略进行了简单的消融实验，最后保留了论文中所给出的六个评估维度，并给予相同的权重。此外，我们逐步增加top-k的模块数量，最后核心模块的top20召回率达到70%，进一步增加topk，召回收益并不明显。
 
@@ -145,11 +194,11 @@ Table1
 关于整体效果的权重敏感性分析，考虑到实验的时间成本较大，我们并没有系统地做一些定量分析，在后续的论文版本中我们可以补充更全面的实验分析结果。此外，我们想详细介绍的是：在我们整体算法框架设计中，评估得到的核心模块的作用是在有限的context窗口下，帮助agent对于整体仓库有一个全面的了解。这也是作为repomaster对整个仓库的自主探索入口，自主决策是否要从当前文件扩展搜索和阅读相邻节点的文件。定位到任务相关的代码片段或者文件信息后才送入Agent的context来完成搜索→理解→代码生成/编辑→执行→调试→生成可验证输出的端到端任务自主探索和执行。
 
 context window的设置是我们基于实验观察发现的经验值，当LLM总的context的上下文长度超过5w后，推理能力逐渐下降，这会影响到后续的代码生成、代码修改和代码调试，所以我们优先考虑高信息密度的context。此外整体性能对这些因素不是很敏感，因为我们在LLM的context超过一定长度后，我们会进行过往执行轨迹的反思，同时对已有的探索过程进行最优路径抽取，只保留最有效的执行轨迹信息后，让LLM思考一个更好的解决方案，进行新的探索。这部分我们会设置最大回退重试次数为3。
-EN
+### 9.2 EN
 
-Reviewer 77DM
-10. Weakness (3) & (4)【done】: How does RepoMaster deal with stale or broken dependencies found during exploration? What are the assumptions on the quality of README or internal documentation? What happens when the README is missing or incorrect?
-ZH
+# Reviewer 77DM
+## 10. Weakness (3) & (4)【done】: How does RepoMaster deal with stale or broken dependencies found during exploration? What are the assumptions on the quality of README or internal documentation? What happens when the README is missing or incorrect?
+### 10.1 ZH
 We thank the reviewer for raising these important practical concerns. Indeed, handling stale dependencies and unreliable documentation are critical challenges for real-world repository utilization.
 Handling Stale/Broken Dependencies: RepoMaster incorporates robust error recovery mechanisms specifically designed for such scenarios. As demonstrated in our GitTaskBench experiments (Section E.2), when encountering missing dependencies (e.g., "ModuleNotFoundError"), RepoMaster:
 1. Automatically identifies and installs missing packages through iterative error analysis
@@ -163,10 +212,10 @@ Missing/Incorrect Documentation: When documentation is absent or misleading, Rep
 3. Iterative execution with feedback-based learning
 
 The case study in Figure3 and Figure2 illustrates this capability - despite incomplete documentation, RepoMaster successfully completed the task through structural understanding and adaptive exploration, while baselines failed.
-EN
+### 10.2 EN
 
-11. Q1 & Weakness(1)【done】：Why restrict analysis to .py files only? Many practical projects involve configurations (.yaml, .json), scripts (.sh), or compiled extensions (.cpp). Does this limit applicability? No mention of how the model adapts or generalizes to diverse languages or non-Python repositories.
-ZH
+## 11. Q1 & Weakness(1)【done】：Why restrict analysis to .py files only? Many practical projects involve configurations (.yaml, .json), scripts (.sh), or compiled extensions (.cpp). Does this limit applicability? No mention of how the model adapts or generalizes to diverse languages or non-Python repositories.
+### 11.1 ZH
 我们感谢审稿人提出关于多语言项目（如 C++、Java）可扩展性的深刻问题
 
 我们的方法旨在与语言无关，并易于扩展到其他编程语言。 这里我们阐明了设计原理和可扩展性：
@@ -181,10 +230,10 @@ ZH
 
 我们认同这是未来工作的一个重要方向，并计划在下一版本中将评估范围扩展到多语言存储库。RepoMaster 的模块化设计使此扩展变得简单易用，我们预计不同编程语言的性能提升也将类似。
 
-EN
+### 11.2 EN
 
-12. q2 & q3【done】: Were the weights in the importance scoring scheme manually set or learned? How are the weights (and the corresponding contribution) determined for each feature? Did the authors consider using GNNs or unsupervised learning for structural importance prediction? Are there any negative insights or learnings from such experiments?
-12.1 ZH
+## 12. q2 & q3【done】: Were the weights in the importance scoring scheme manually set or learned? How are the weights (and the corresponding contribution) determined for each feature? Did the authors consider using GNNs or unsupervised learning for structural importance prediction? Are there any negative insights or learnings from such experiments?
+### 12.1 ZH
 
 感谢建议，非常同意，我们确实应该展开介绍一下我们模块级重要性评分的实验分析过程，我们将在后续论文附录中补充介绍实验细节。
 1. 首先我们人为构建了几个仓库的核心文件模块作为我们的测试集，然后通过repomaster中的不同权重组合策略的表现来针对性优化，来提升重要文件集的召回率。通过实验对比，我们去除了重合度比较高的几个评估维度的分数，然后我们对于这些每个单一维度的策略进行了简单的消融实验，最后保留了论文中所给出的六个评估维度，并给予相同的权重。此外，我们逐步增加top-k的模块数量，最后核心模块的top20召回率达到70%，进一步增加topk，召回收益并不明显。
@@ -197,11 +246,11 @@ a. 可解释性：我们的基于特征的方法清楚地解释了为什么某�
 b. 计算效率：我们的方法以较小的时间开销运行，对于典型的存储库（1-5k 个文件）整个预处理平均在 4.8 秒内完成
 c. 泛化：基于规则的特征在不同的编程语言中具有更好的泛化能力，包括 C++、Java、JavaScript 等。
 
-12.2 EN
+### 12.2 EN
 
-13.  q4【done】: What is the fallback strategy when errors persist (e.g., missing dependencies, ambiguous import paths)?
+## 13.  q4【done】: What is the fallback strategy when errors persist (e.g., missing dependencies, ambiguous import paths)?
 
-13.1 ZH
+### 13.1 ZH
 感谢您提出这个关于错误处理策略的重要问题。我们的 RepoMaster 框架实现了一套系统的多层回退机制，可以有效地处理持久性错误：
 
 1.通过全面的多代理架构实现强大的故障恢复 为了处理选择不合适的存储库的情况，我们设计了一个具有专门恢复代理的分层多代理系统：
@@ -222,11 +271,11 @@ When execution failures occur, our Schedule Agent coordinates these specialized 
 
 这种多层方法确保 RepoMaster 保持稳健性和效率，实现我们报告的 62.96% 的任务成功率，同时使用的令牌比基线少 95%。
 
-13.2 EN
+### 13.2 EN
 
-Reviewer LTVq
-14. q1【done】: How was the subset use for MLE-R chosen? Why was a subset taken and not the entire MLE-Bench?
-ZH
+# Reviewer LTVq
+## 14. q1【done】: How was the subset use for MLE-R chosen? Why was a subset taken and not the entire MLE-Bench?
+### 14.1 ZH
 感谢审稿人提出这个重要问题。我来详细说明MLE-R子集选择的理由和方法：
 1. 计算资源和时间考虑：我们经过初步测试发现，单个任务的平均运行时长超过10小时（包括repository搜索、结构分析、代码生成和多次迭代调试）。考虑到需要在3个不同的LLM（GPT-4o、Claude 3.5、DeepSeek V3）和3个框架（RepoMaster、OpenHands、SWE-Agent）上进行完整评估，完成全部75个任务需要约6,750小时的计算时间和大量的API资源消耗，因此我们选择了OpenAI官方提供的MLE-Bench-lite作为实验评估测试集(22 Task)。
 采用标准化的子集：MLE-Bench-lite这是一个经过精心设计的代表性子集，包含了不同领域（CV、NLP、ASR等）和不同难度级别的任务，能够充分反映agent在机器学习工程任务上的能力。这种选择确保了我们的评估具有可比性和标准化。
@@ -234,9 +283,9 @@ ZH
 代表性保证：尽管是子集，我们的MLE-R仍然覆盖了多样化的ML任务类型，包括图像分类、文本分类、时间序列预测等，能够全面评估agent的repository利用能力。具体的Competition ID列表已在附录Table 6-10中详细展示。
 我们相信这种选择在实验可行性和评估全面性之间达到了良好的平衡，同时保持了与现有工作的可比性, 在future work中我们愿意扩展到更多任务进行评估。
 
-15. q2【done】: As for other baselines, why wasn't AIDE [1] used? It holds the current state of the art on MLE-Bench.
+## 15. q2【done】: As for other baselines, why wasn't AIDE [1] used? It holds the current state of the art on MLE-Bench.
 
-15.1 ZH
+### 15.1 ZH
 感谢您提出这个关于 AIDE 的重要问题。我们承认 AIDE 在原始 MLE-Bench 上达到了最佳性能，并且很高兴有机会解释为什么它没有被纳入我们的评估基准。
 
 1.基本任务差异： 关键原因是 AIDE 和 RepoMaster 针对的是根本不同的问题：
@@ -252,9 +301,9 @@ ZH
 
 Table1
 
-16. q3: I would have liked to see a more comprehensive description of GitTaskBench in the paper. Looking through the Appendix/repo, I found the tasks to be interesting, and I think a comprehensive description in the paper is warranted. I'm interested in the tasks in GitTaskBench, and would like to know more. For example, in some of the tasks, it seems like there could be several correct answers (image coloring, style transfer). How are correct solutions determined? 
+## 16. q3: I would have liked to see a more comprehensive description of GitTaskBench in the paper. Looking through the Appendix/repo, I found the tasks to be interesting, and I think a comprehensive description in the paper is warranted. I'm interested in the tasks in GitTaskBench, and would like to know more. For example, in some of the tasks, it seems like there could be several correct answers (image coloring, style transfer). How are correct solutions determined? 
 
-16.1 ZH
+### 16.1 ZH
 Hi, 感谢您对GitTaskBench的兴趣~但想友好提醒您，事实上我们的GitTaskBench是已经开源的，且已经放入投稿的论文中，作为参考文献【26】的形式给出。
 详见参考文献【26】：GitTaskBench: Anonymous github repository. 
 
@@ -274,25 +323,25 @@ Tasks failing to meet these thresholds are marked as failures.
 考虑到篇幅有限，且这篇文章确实是更偏向于算法和框架的构造，我们非常抱歉没有添加对其“comprehensive description” in this version. 不过我们承诺，如果我们有幸中稿，之后增加的一页，将着重介绍这部分内容。
 再次感谢您的兴趣。
 
-17. Else【done】: In general I like the style of the figures, but I think they're too information-dense. They would be easier to understand if they were simpler in my opinion.
-17.1 ZH
+## 17. Else【done】: In general I like the style of the figures, but I think they're too information-dense. They would be easier to understand if they were simpler in my opinion.
+### 17.1 ZH
 Thanks for your insightful suggestion and your like. We are sorry 这个确实有一些information-dense 考虑到篇幅的有限，将几个图的信息放到了一起，以及对构图进行过努力的压缩。我们非常同意您的观点，或许直接将图的面积增大会改善这一点，如果中稿会增加一页，我们将立刻调整为 simpler and 更宽松的图。
 
 
-18. Else【done】: The descriptions sometimes lack detail. In Table 3's description, it should specify that the ablation study was done on RepoMaster + 4o on GitTaskBench.
-18.1 ZH
+## 18. Else【done】: The descriptions sometimes lack detail. In Table 3's description, it should specify that the ablation study was done on RepoMaster + 4o on GitTaskBench.
+### 18.1 ZH
 我们衷心感谢审稿人对表 3 描述的清晰度提供宝贵的反馈。我们完全同意，实验设置细节对于读者正确解释消融研究结果至关重要。当前我们这部分实验细节是在4.4节中说明的，但是在后续论文版本中我们会在table3描述中明确指出消融研究是在GitTaskBench上对RepoMaster + 4o进行的
 
 
-19. Else【done】: I think that seeing RepoMaster results on SWE-Bench would be very interesting. Many of the repos that make up SWE-Bench contain many files and lines of code, and it seems like an agent that uses Hybrid Hierarchical Analysis + Code Exploration could achieve high performance.
+## 19. Else【done】: I think that seeing RepoMaster results on SWE-Bench would be very interesting. Many of the repos that make up SWE-Bench contain many files and lines of code, and it seems like an agent that uses Hybrid Hierarchical Analysis + Code Exploration could achieve high performance.
 
-19.1 ZH
+### 19.1 ZH
 Thank you for your suggestion and interest in our work! Your point about testing RepoMaster on SWE-Bench is very insightful. We completely agree that the large codebases in SWE-Bench (with numerous files and lines of code) are exactly the scenarios our Hybrid Hierarchical Analysis + Code Exploration approach is designed to address.
 We have added SWE-Bench validation to our near-term roadmap and will submit our results once completed. Additionally, our ongoing work includes training RepoMaster's agentic reasoning capabilities into foundation models through reinforcement learning. We hope that RepoMaster's complex repository understanding and exploration capabilities, particularly the Hybrid Hierarchical Analysis + Code Exploration mechanisms, will outperform existing systems like Claude Code on complex codebase development tasks. These efforts are part of our continuous work series, with experiments already underway, and we look forward to sharing more progress in the future.
 
-20. q4【done】: In terms of GitTaskBench -- how would the results change if the underlying models were changed to o4-mini or Gemini 2.5 Pro? These are competitive cost-wise with the models used in the paper, and would probably yield scores of 70-75% on GitTaskBench, given that the current state of the art gets nearly 63%. In this case, GitTaskBench would be very close to being solved, already on release. How would you address this? I really like the premise of GitTaskBench, but practically speaking, it seems close to being solved.
+## 20. q4【done】: In terms of GitTaskBench -- how would the results change if the underlying models were changed to o4-mini or Gemini 2.5 Pro? These are competitive cost-wise with the models used in the paper, and would probably yield scores of 70-75% on GitTaskBench, given that the current state of the art gets nearly 63%. In this case, GitTaskBench would be very close to being solved, already on release. How would you address this? I really like the premise of GitTaskBench, but practically speaking, it seems close to being solved.
 
-20.1 ZH
+### 20.1 ZH
 感谢审稿人对GitTaskBench可扩展性的深入思考。我们认真考虑了使用o4-mini和Gemini 2.5 Pro等新模型的影响，以下是我们的实验分析：
 1. 任务难度的长尾分布特性 GitTaskBench的设计反映了真实世界任务的难度分布——从简单的PDF解析到图像风格迁移任务再到复杂的VideoPose3D姿态估计，难度呈指数级增长。即使整体完成率达到70%，剩余的30%任务代表着需要深度代码理解、复杂依赖管理和端到端任务解决的挑战。这种长尾分布确保了benchmark的持续相关性。且对于真实世界的端到端任务执行需求来说，70%仅仅是一个及格线。
 2. 性能提升的边际递减效应 我们的实验分析揭示了一个关键洞察：当我们将模型从GPT-4o升级到Claude 3.5时，任务通过率从40.74%提升到62.96%。然而，深入分析这22%的提升发现：
