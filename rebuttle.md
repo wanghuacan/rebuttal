@@ -83,7 +83,7 @@ This adaptive multi-agent approach ensures the system can recover from various f
 
 感谢您提出的宝贵意见。您关注的**预处理步骤的计算成本**的确需要我们作更为详尽的阐述。我们将在修订版和附录中添加这方面的全面实验数据。
 
-#### 静态分析预处理性能
+#### 1. 静态分析预处理性能
 
 我们的静态分析预处理流程，利用高度优化的库（例如，用于AST解析的**tree-sitter**）并支持多线程执行。
 
@@ -94,7 +94,7 @@ This adaptive multi-agent approach ensures the system can recover from various f
 2. **依赖/调用图生成**：~1.9秒
 3. **核心组件识别**：~0.8秒
 
-#### 复杂存储库的附加处理
+#### 2. 复杂存储库的附加处理
 
 对于核心组件超过上下文阈值（**8k个token**）的存储库，我们采用基于**LLM的摘要方法**：
 - 使用**Deepseek V3**时，耗时约**10秒**
@@ -104,7 +104,7 @@ This adaptive multi-agent approach ensures the system can recover from various f
 
 Thank you for your valuable feedback. We acknowledge that the **computational cost of the preprocessing step** indeed requires more thorough elaboration. We will add comprehensive experimental data on this aspect in the revision and appendix.
 
-#### Static Analysis Preprocessing Performance
+#### 1. Hierarchical Repository Analysis
 
 Our static analysis preprocessing pipeline utilizes highly optimized libraries (e.g., **tree-sitter** for AST parsing) and supports multi-threaded execution.
 
@@ -115,7 +115,7 @@ The entire preprocessing completes on average within **4.8 seconds**, including:
 2. **Dependency/call graph generation**: ~1.9 seconds
 3. **Core component identification**: ~0.8 seconds
 
-#### Additional Processing for Complex Repositories
+#### 2. Additional Processing for Complex Repositories
 
 For repositories where core components exceed the context threshold (**8k tokens**), we employ an **LLM-based summarization approach**:
 - Using **Deepseek V3**, this takes approximately **10 seconds**
@@ -159,8 +159,6 @@ For repositories where core components exceed the context threshold (**8k tokens
 
 关于整体效果的权重敏感性分析，考虑到实验的时间成本较大，我们并没有系统地做一些定量分析，在后续的论文版本中我们可以补充更全面的实验分析结果。
 
-#### 核心模块在算法框架中的作用
-
 此外，我们想详细介绍的是：在我们整体算法框架设计中，评估得到的**核心模块的作用**是在有限的context窗口下，帮助agent对于整体仓库有一个全面的了解。这也是作为**RepoMaster**对整个仓库的自主探索入口，自主决策是否要从当前文件扩展搜索和阅读相邻节点的文件。定位到任务相关的代码片段或者文件信息后才送入Agent的context来完成端到端任务自主探索和执行：
 
 ```
@@ -202,8 +200,6 @@ Experiments show that **Top-20** achieves a good balance between recall rate and
 
 Regarding overall effectiveness weight sensitivity analysis, considering the significant time cost of experiments, we did not systematically conduct quantitative analysis. In subsequent paper versions, we can supplement more comprehensive experimental analysis results.
 
-#### Role of Core Modules in the Algorithm Framework
-
 Additionally, we want to detail that in our overall algorithm framework design, the role of the evaluated **core modules** is to help the agent have a comprehensive understanding of the entire repository under limited context windows. This also serves as the **RepoMaster**'s autonomous exploration entry point for the entire repository, autonomously deciding whether to expand the search and read adjacent node files from the current file. Only after locating task-relevant code snippets or file information are they fed into the Agent's context to complete end-to-end task autonomous exploration and execution:
 
 ```
@@ -237,13 +233,7 @@ Search → Understand → Code Generation/Editing → Execute → Debug → Gene
   检索合适仓库 → 理解其功能 → 配置环境 → 代码生成 → 执行调试 → 生成可验证输出
   ```
 
-我们在**GitTaskBench**（18个仓库，54个任务）和**MLE-R**（22个ML任务）上的评测涵盖：
-- 图像处理
-- 视频分析  
-- 语音识别
-- 等多模态实际应用
-
-而非仅限于代码修复。这种任务复杂度的差异直接驱动了不同的技术路线。
+Our evaluation on **GitTaskBench** (18 repositories, 54 tasks) and **MLE-R** (22 ML tasks) covers: Image processing, Video analysis, Speech recognition and other multimodal practical applications. Rather than just code repair. This difference in task complexity directly drives different technical approaches.
 
 #### 2. 核心技术贡献
 
@@ -268,15 +258,8 @@ AST遍历提取模块/类/函数，构建HCT/FCG/MDG三种互补结构，并在�
 - 任务通过率：**62.96%**（vs 24.07%）
 - token消耗降低：**95%**（154k vs 3094k）
 
-**MLE-R实验结果：**
-- 有效提交率：**95.45%**
-- 获得奖牌率：**27.27%**
-- 相对最强基线提升：**110%**
-
 **消融实验**（表3）证明每个组件都有显著贡献，特别是移除"上下文感知探索"后性能下降最多（**-5.56%**），验证了我们算法框架的有效性。
 
-[1] Ouyang, S., Yu, W., Ma, K., Xiao, Z., Zhang, Z., Jia, M., ... & Yu, D. (2024). RepoGraph: Enhancing AI Software Engineering with Repository-level Code Graph. arXiv preprint arXiv:2410.14684.
-[2] Tao, Hongyuan, et al. "Code Graph Model (CGM): A Graph-Integrated Large Language Model for Repository-Level Software Engineering Tasks." arXiv preprint arXiv:2505.16901 (2025).
 ### 4.2 EN
 
 Thank you for your meticulous observations regarding the connections with RepoGraph[1] and CGM[2]. We highly acknowledge the contributions of these parallel works—**RepoGraph** as a pluggable module effectively improved code repair performance, and **CGM** achieved excellent results on SWE-bench-Lite through graph attention mechanisms. We also look forward to exploring the possibilities of future technical integration.
@@ -299,13 +282,7 @@ Experimental results prove that this methodological framework brings quantifiabl
   Retrieve suitable repository → Understand its functionality → Configure environment → Code generation → Execute debugging → Generate verifiable output
   ```
 
-Our evaluation on **GitTaskBench** (18 repositories, 54 tasks) and **MLE-R** (22 ML tasks) covers:
-- Image processing
-- Video analysis
-- Speech recognition
-- Other multimodal practical applications
-
-Rather than just code repair. This difference in task complexity directly drives different technical approaches.
+Our evaluation on **GitTaskBench** (18 repositories, 54 tasks) and **MLE-R** (22 ML tasks) covers: Image processing, Video analysis, Speech recognition and other multimodal practical applications. Rather than just code repair. This difference in task complexity directly drives different technical approaches.
 
 #### 2. Core Technical Contributions
 
@@ -330,24 +307,13 @@ Rather than statically embedding graphs into attention. Figure 2 shows how this 
 - Task pass rate: **62.96%** (vs 24.07%)
 - Token consumption reduction: **95%** (154k vs 3094k)
 
-**MLE-R Experimental Results:**
-- Valid submission rate: **95.45%**
-- Medal acquisition rate: **27.27%**
-- Improvement over strongest baseline: **110%**
-
 **Ablation experiments** (Table 3) prove each component has significant contribution, particularly after removing "context-aware exploration" performance dropped most (**-5.56%**), validating the effectiveness of our algorithmic framework.
-
-[1] Ouyang, S., Yu, W., Ma, K., Xiao, Z., Zhang, Z., Jia, M., ... & Yu, D. (2024). RepoGraph: Enhancing AI Software Engineering with Repository-level Code Graph. arXiv preprint arXiv:2410.14684.
-[2] Tao, Hongyuan, et al. "Code Graph Model (CGM): A Graph-Integrated Large Language Model for Repository-Level Software Engineering Tasks." arXiv preprint arXiv:2505.16901 (2025).
-
 
 ## 5. Weaknesses2【done】：The experiments only compare with OpenHands and SWE-Agent, but do not include newer repository-level methods like RepoGraph [1] or other Agents works, such as Agentless [3]. Adding such baselines would better position RepoMaster within the current literature.
 
 ### 5.1 ZH
 
 感谢审稿人的宝贵建议。我们完全认同可以与更多最新方法进行比较，以更全面地展示**RepoMaster**的定位。以下说明我们的基线选择理由，并承诺在修订版中加入与**RepoGraph**和**Agentless**的补充性实验结果与讨论。
-
-#### 基线选择理由
 
 我们选择**OpenHands**和**SWE-Agent**作为主要基线基于以下考虑：
 
@@ -373,8 +339,6 @@ SWE-bench leaderboard榜单均显示，这两个agent框架在Verified上持续�
 ### 5.2 EN
 
 Thank you for your valuable suggestion. We completely agree that comparisons with more recent methods can be conducted to more comprehensively demonstrate **RepoMaster**'s positioning. Here we explain our baseline selection rationale and commit to adding supplementary experimental results and discussions with **RepoGraph** and **Agentless** in the revision.
-
-#### Baseline Selection Rationale
 
 We selected **OpenHands** and **SWE-Agent** as primary baselines based on the following considerations:
 
@@ -413,20 +377,14 @@ Under this task setting:
 #### 1. 与语言无关的架构
 
 虽然我们选择**Python**进行评估是因为它在深度学习和机器学习领域占据主导地位（这与我们的基准测试任务一致），但我们的核心方法从根本上来说与语言无关。
-
-**技术基础：**
-- **层次结构分析（HCT）**、**函数调用图（FCG）**和**模块依赖图（MDG）**的构建依赖于抽象语法树（AST）解析
-- 该解析适用于大多数主流语言，包括C++、Java、JavaScript等
+**层次结构分析（HCT）**、**函数调用图（FCG）**和**模块依赖图（MDG）**的构建依赖于抽象语法树（AST）解析, 该解析适用于大多数主流语言，包括C++、Java、JavaScript等
 
 #### 2. 互补探索机制
 
 我们的框架采用两种互补的探索策略：
 
-**2.1 基于图的探索**
-- 针对具有丰富结构信息的语言（例如Python、Java、C++）
-
-**2.2 基于树的层次结构探索**
-- 作为脚本语言或结构更简单的项目的后备
+- **2.1 基于图的探索**：针对具有丰富结构信息的语言（例如Python、Java、C++）
+- **2.2 基于树的层次结构探索**：作为脚本语言（.sh）或结构简单的项目文件（.yaml, .json）的主要探索方式
 
 #### 3. 自适应策略选择
 
@@ -446,21 +404,15 @@ Our approach is designed to be **language-agnostic** and easily extensible to ot
 
 #### 1. Language-Agnostic Architecture
 
-While we chose **Python** for evaluation because it dominates the deep learning and machine learning fields (consistent with our benchmark tasks), our core approach is fundamentally language-agnostic.
-
-**Technical Foundation:**
-- **Hierarchical Component Tree (HCT)**, **Function Call Graph (FCG)**, and **Module Dependency Graph (MDG)** construction relies on Abstract Syntax Tree (AST) parsing
-- This parsing applies to most mainstream languages, including C++, Java, JavaScript, etc.
+While we chose **Python** for evaluation because it dominates the deep learning and machine learning fields (consistent with our benchmark tasks), our core approach is fundamentally language-agnostic. 
+Hierarchical Component Tree (HCT), Function Call Graph (FCG), and Module Dependency Graph (MDG) construction relies on Abstract Syntax Tree (AST) parsing, which applies to most mainstream languages, including C++, Java, JavaScript, etc.
 
 #### 2. Complementary Exploration Mechanisms
 
 Our framework employs two complementary exploration strategies:
 
-**2.1 Graph-based Exploration**
-- For languages with rich structural information (e.g., Python, Java, C++)
-
-**2.2 Tree-based Hierarchical Exploration**
-- As fallback for scripting languages or projects with simpler structures
+- **2.1 Graph-based Exploration**: For languages with rich structural information (e.g., Python, Java, C++)
+- **2.2 Tree-based Hierarchical Exploration**: As the primary exploration method for scripting languages (.sh) or structurally simple project files (.yaml, .json)
 
 #### 3. Adaptive Strategy Selection
 
@@ -609,7 +561,9 @@ We thank the reviewer for raising this insightful question about **multi-languag
 
 Our approach is designed to be **language-agnostic** and easily extensible to other programming languages. Here we clarify the design principles and extensibility:
 
-1. Language-Agnostic Architecture: While we chose Python for evaluation because it dominates the deep learning and machine learning fields (consistent with our benchmark tasks), our core approach is fundamentally language-agnostic. Hierarchical Component Tree (HCT), Function Call Graph (FCG), and Module Dependency Graph (MDG) construction relies on Abstract Syntax Tree (AST) parsing, which applies to most mainstream languages, including C++, Java, JavaScript, etc.
+**1. Language-Agnostic Architecture:**
+
+While we chose Python for evaluation because it dominates the deep learning and machine learning fields (consistent with our benchmark tasks), our core approach is fundamentally language-agnostic. Hierarchical Component Tree (HCT), Function Call Graph (FCG), and Module Dependency Graph (MDG) construction relies on Abstract Syntax Tree (AST) parsing, which applies to most mainstream languages, including C++, Java, JavaScript, etc.
 
 **2. Complementary Exploration Mechanisms**
 
@@ -703,11 +657,7 @@ Schedule Agent (Orchestrator)
 - **RepoMaster**：通过智能回溯成功从多个依赖性错误中恢复
 - **基准方法**：要么完全失败，要么在徒劳的尝试中耗尽资源（OpenHands，约140次迭代）
 
-#### 4. 整体效果
-
-这种多层方法确保**RepoMaster**保持稳健性和效率：
-- 实现我们报告的**62.96%**的任务成功率
-- 同时使用的token比基线少**95%**
+这种多层方法确保**RepoMaster**保持稳健性和效率：实现我们报告的**62.96%**的任务成功率, 同时使用的token比基线少**95%**
 
 ### 13.2 EN
 
@@ -743,11 +693,7 @@ As demonstrated in our **case study (Figure 3)**, this strategy is crucial for c
 - **RepoMaster**: Successfully recovered from multiple dependency errors through intelligent backtracking
 - **Baseline methods**: Either failed completely or exhausted resources in futile attempts (OpenHands, ~140 iterations)
 
-#### 4. Overall Effectiveness
-
-This multi-layer approach ensures **RepoMaster** maintains both robustness and efficiency:
-- Achieving our reported **62.96%** task success rate
-- While using **95%** fewer tokens than baselines
+This multi-layer approach ensures **RepoMaster** maintains both robustness and efficiency: Achieving our reported **62.96%** task success rate while using **95%** fewer tokens than baselines
 
 # Reviewer LTVq
 ## 14. q1【done】: How was the subset use for MLE-R chosen? Why was a subset taken and not the entire MLE-Bench?
@@ -763,11 +709,9 @@ This multi-layer approach ensures **RepoMaster** maintains both robustness and e
 
 **MLE-Bench-lite**这是一个经过精心设计的代表性子集，包含了不同领域（CV、NLP、ASR等）和不同难度级别的任务，能够充分反映agent在机器学习工程任务上的能力。这种选择确保了我们的评估具有可比性和标准化。
 
-#### 3. 数据可用性调整
-
 在使用MLE-Bench-lite的过程中，我们发现有2个任务（detecting-insults-in-social-commentary和the-icml-2013-whale-challenge-right-whale-redux）由于Kaggle数据访问权限问题无法下载。为保持评估的完整性，我们从完整的MLE-Bench中选择了2个替代任务（chaii-hindi-and-tamil-question-answering和tgs-salt-identification-challenge），这两个任务在领域覆盖和难度上与被替换任务相当，从而保持了总数22个任务不变。
 
-#### 4. 代表性保证
+#### 3. 代表性保证
 
 尽管是子集，我们的MLE-R仍然覆盖了多样化的ML任务类型，包括图像分类、文本分类、时间序列预测等，能够全面评估agent的repository利用能力。具体的Competition ID列表已在附录Table 6-10中详细展示。
 
@@ -785,11 +729,9 @@ Through preliminary testing, we found that the average runtime for a single task
 
 **MLE-Bench-lite** is a carefully designed representative subset containing tasks from different domains (CV, NLP, ASR, etc.) and different difficulty levels, capable of fully reflecting agent capabilities in machine learning engineering tasks. This choice ensures our evaluation has comparability and standardization.
 
-#### 3. Data Availability Adjustments
-
 During the use of MLE-Bench-lite, we found that 2 tasks (detecting-insults-in-social-commentary and the-icml-2013-whale-challenge-right-whale-redux) could not be downloaded due to Kaggle data access permission issues. To maintain evaluation completeness, we selected 2 alternative tasks from the complete MLE-Bench (chaii-hindi-and-tamil-question-answering and tgs-salt-identification-challenge). These two tasks are comparable to the replaced tasks in domain coverage and difficulty, thus maintaining the total of 22 tasks unchanged.
 
-#### 4. Representativeness Guarantee
+#### 3. Representativeness Guarantee
 
 Despite being a subset, our MLE-R still covers diverse ML task types, including image classification, text classification, time series prediction, etc., capable of comprehensively evaluating agent repository utilization capabilities. The specific Competition ID list has been detailed in appendix Tables 6-10.
 
@@ -921,7 +863,7 @@ For example, Style Transfer in Video Processing, correct solutions determined if
 In speech enhancement tasks, success might be defined by achieving a PESQ ≥ 2.0 (indicating acceptable perceptual quality) and a SNR ≥ 15 dB (suggesting good suppression of noise).
 Tasks failing to meet these thresholds are marked as failures.
 
-Considering the limited space and that this article is indeed more focused on algorithm and framework construction, we sincerely apologize for not adding a "comprehensive description" in this version. However, we promise that if we are fortunate enough to be accepted, the additional page will focus on introducing this content.
+Considering the limited space and that this article is indeed more focused on algorithm and framework construction, we sincerely apologize for not adding a "comprehensive description" in this version. However, we promise that in the revised version of this article we will add an extra page specifically to introduce this content.
 Thank you again for your interest.
 
 ## 17. Else【done】: In general I like the style of the figures, but I think they're too information-dense. They would be easier to understand if they were simpler in my opinion.
@@ -1047,7 +989,7 @@ The difficulty exhibits **exponential growth**. Even if the overall completion r
 - Complex dependency management
 - End-to-end task resolution challenges
 
-This **long-tail distribution** ensures the benchmark's continued relevance. For real-world end-to-end task execution demands, **70% is merely a passing grade**.
+This **long-tail distribution** ensures the benchmark's continued challenge. For real-world end-to-end task execution demands, **70% is merely a passing grade**.
 
 #### 2. Diminishing Returns of Performance Improvements
 
@@ -1075,11 +1017,6 @@ This significant **token efficiency difference** and nearly **3x performance gap
 
 Referencing the development trajectory of **SWE-Bench** code repair task evaluation: **Gemini 2.5 Pro** achieved **63.8%** code repair rate, while the latest Claude4 model approaches **80%**, indicating that pure code repair tasks are being rapidly solved.
 
-**GitTaskBench's Unique Value:**
-By requiring agents to handle complete:
-- Codebase understanding
-- Dependency management
-- Error diagnosis
-- End-to-end task resolution
+**GitTaskBench's Unique Value:** By requiring agents to handle complete: Codebase understanding, Dependency management, Error diagnosis, End-to-end task resolution
 
 It provides more comprehensive evaluation dimensions. This will also be one of **Code Agent's core optimization directions in the next phase**, and we will subsequently regularly introduce tasks reflecting the latest development practices to maintain GitTaskBench's challenge level.
