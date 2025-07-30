@@ -622,7 +622,9 @@ We acknowledge this as an important direction for future work and plan to extend
 
 ### 12.1 EN
 
-Thank you for your valuable suggestion. We agree on the necessity to systematically elaborate on the experimental analysis process of our **module-level importance scoring**. We will supplement the experimental details in the appendix of subsequent paper versions.
+Thank you for your valuable questions. The weights in our importance scoring scheme were **determined through systematic ablation experiments and optimization analysis**. We started with different weight combination strategies and optimized them based on the recall performance of important file identification. Through comprehensive experimental validation, we found that **equal weighting** achieved the optimal recall performance across different evaluation dimensions.
+
+The detailed experimental analysis process is as follows:
 
 #### Experimental Design Process
 
