@@ -505,9 +505,13 @@ Context window的设置是我们基于实验观察发现的经验值：**LLM支�
 这种设计基于我们的实验观察：**当LLM的总context长度超过一定token数后，推理能力会逐渐下降**，直接影响后续的代码生成、代码修改和代码调试的质量。通过动态的上下文管理和轨迹优化，我们能够在保持高推理质量的同时，支持长期的复杂任务执行。
 ### 9.2 EN
 
-Thank you for the suggestion. Due to space limitations, the details of parameter selection and sensitivity analysis were not included in the main text of the paper. We agree that these are very important and we should indeed expand on the experimental analysis process of our top-k parameter selection. We will supplement the experimental details in the appendix of subsequent paper versions.
+Thank you for the suggestion. Due to space limitations, the details of parameter selection and sensitivity analysis were not included in the main text of the paper. We agree that these aspects are very important, and we will expand on the experimental analysis process of our top-k parameter selection. We will supplement all the experimental details in the appendix of future versions of the paper.
 
-#### Top-k Parameter Selection Process
+Our experiments showed that, although those hyperparameters (such as top-k modules, top-k classes) may influence the recall rate of initially important files, this effect does not significantly impact the final end-to-end task success rate. For this reason, we did not emphasize fine-grained parameter sensitivity in our main study.
+
+Specifically:
+
+#### Top-k Module Selection Process
 
 **1. Test Set Construction**
 - First, we manually constructed the core file modules of several repositories as our test set
@@ -518,16 +522,19 @@ Thank you for the suggestion. Due to space limitations, the details of parameter
 - Finally, the **top-20 recall rate of core modules reached 70%**
 - Further increasing top-k did not yield significant recall benefits
 
-#### Top-k Module Recall Rate Experimental Results
+Top-k Module Recall Rate Experimental Results:
 
 | Top-k  | Recall Rate (%) | Relative Improvement |
 |--------|----------------|---------------------|
 | Top-5  | 46.6           | -                   |
 | Top-10 | 60.0           | +13.4%              |
 | Top-20 | 70.0           | +10.0%              |
-| Top-30 | 73.3           | +3.3%               |
+| Top-30 | 73.3           | +3.30%               |
 
 Experiments show that **Top-20** achieves a good balance between recall rate and efficiency, with diminishing returns from further increasing k values.
+
+#### Top-k Class Selection Process
+The value of k=10 was manually set, determined based on the average length of each class and the total token budget allocated for classes within the initial context.
 
 #### Context Window
 The context window setting is an empirical value discovered through experimental observations: **Maximum LLM context length ÷ Average execution rounds ≈ 8k tokens**. When the context of a single interaction exceeds this threshold, we perform focused information refinement to ensure that the most critical information is retained within the limited window.
