@@ -251,38 +251,38 @@ AST遍历提取模块/类/函数，构建HCT/FCG/MDG三种互补结构，并在�
 
 ### 4.2 EN
 
-Thank you for your meticulous observations regarding the connections with RepoGraph[1] and CGM[2]. We highly acknowledge the contributions of these parallel works—**RepoGraph** as a pluggable module effectively improved code repair performance, and **CGM** achieved excellent results on SWE-bench-Lite through graph attention mechanisms. We also look forward to exploring the possibilities of future technical integration.
+Thank you for your meticulous observations regarding the connections with RepoGraph[1] and CGM[2]. We highly acknowledge the contributions of these parallel works—RepoGraph as a pluggable module effectively improved code repair performance, and CGM achieved excellent results on SWE-bench-Lite through graph attention mechanisms. We also look forward to exploring the possibilities of future technical integration.
 
-However, our **RepoMaster** differs fundamentally from **RepoGraph/CGM** in task problem definition, method design, and technical contributions:
+**However, our RepoMaster differs fundamentally from RepoGraph/CGM** in task problem definition, method design, and technical contributions:
 
-- **Task Level**: We focus on real, end-to-end tasks, not just code repair
-- **Technical Innovation and Contribution**: Our work is application-driven. All algorithms and approaches are designed to serve practical use
-  - RepoMaster's contribution **is not** in how to construct code graphs, **but** in using structured understanding as a tool for context-aware exploration. 
-  - The technical core is **task-driven static-dynamic collaboration, and autonomous exploration, and decision-making for information selection**, serving the **search→understand→generate→execute→debug→convergence closed loop** in real-world end-to-end tasks. 
+- We focus on real, end-to-end tasks, not just code repair
+- Our work is application-driven. All algorithms and approaches are designed to serve practical use
+  - RepoMaster's contribution **is NOT** in how to construct code graphs, **but in using structured understanding as a tool for context-aware exploration**.
+  - The technical core is *task-driven static-dynamic collaboration, and autonomous exploration, and decision-making for information selection*, serving the **search→understand→generate→execute→debug→convergence closed loop** in real-world end-to-end tasks.
 
-Experimental results prove that this methodological framework brings quantifiable significant effectiveness benefits and token efficiency improvements.
+Experimental results prove that our methodological framework brings quantifiable significant effectiveness benefits and token efficiency improvements.
 
-#### 1. Fundamental Differences in Problem Definition
+#### 1. Fundamental Differences in Problem Definition from the related works
 
-**RepoGraph and CGM** focus on code repair within single repositories (SWE-bench), while **RepoMaster** addresses more challenging task scenarios: reusing open-source repository complex project code to complete end-to-end real tasks, evaluated based on MLE-R/GitTaskBench, covering multi-domain, executable, automatically verifiable tasks.
+RepoGraph and CGM focus on code repair within single repositories (SWE-bench), while RepoMaster addresses more challenging task scenarios: reusing open-source repository complex project code to complete end-to-end real tasks, evaluated based on MLE-R/GitTaskBench, covering multi-domain, executable, automatically verifiable tasks.
 
-- **RepoGraph/CGM**: Given GitHub issues, locate and modify code within repositories to fix bugs
-- **RepoMaster**: Given natural language tasks (e.g., "remove scratches from old photos"), requires:
+- RepoGraph/CGM: Given GitHub issues, locate and modify code within repositories to fix bugs
+- RepoMaster: Given natural language tasks (e.g., "remove scratches from old photos"), requires:
   ```
   Retrieve suitable repository → Understand its functionality → Configure environment → Code generation → Execute debugging → Generate verifiable output
   ```
 
 Our evaluation on **GitTaskBench** (18 repositories, 54 tasks) and **MLE-R** (22 ML tasks) covers: Image processing, Video analysis, Speech recognition and other multimodal practical applications. Rather than just code repair. This difference in **task complexity** directly drives different technical approaches.
 
-#### 2. Core Technical Contributions
+#### 2. Core Technical Contributions of RepoMaster
 
 RepoMaster was designed from the beginning with the goal of **"reusing open-source repositories to solve real-world end-to-end tasks"**, requiring not only repository understanding but also **completing the entire task execution process under constrained context**:
 
-**(1) Hybrid Structural Repository Mapping**
+(1) Hybrid Structural Repository Mapping
 
 AST traversal extracts modules/classes/functions, constructs three complementary structures (HCT/FCG/MDG), and identifies core components on this basis, distilling "the most critical entry points and backbone for this task" with limited context.
 
-**(2) Autonomous Exploration-Execution Closed Loop**
+(2) Autonomous Exploration-Execution Closed Loop
 
 Under limited context, agents dynamically switch between the following phases:
 - Code viewing ↔ Dependency tracking
@@ -290,7 +290,7 @@ Under limited context, agents dynamically switch between the following phases:
 
 Rather than statically embedding graphs into attention. Figure 2 shows how this iterative process gradually locates and resolves practical issues like missing models and dependency errors.
 
-**(3) Context-aware Information Selection**
+(3) Context-aware Information Selection
 
 To address the key challenge of limited context in agent applications, we propose programmer-inspired, multi-level information selection with reduction strategies for code, documentation, and feedback logs.
 
@@ -304,7 +304,7 @@ To address the key challenge of limited context in agent applications, we propos
 
 **Ablation experiments** (Table 3) prove each component has significant contribution, particularly after removing "context-aware exploration" performance dropped most (**-5.56%**), validating the effectiveness of our algorithmic framework.
 
-*Additionally,  as a minor note, reference CGM[2] is a concurrent work that was made public on arXiv after our submission (22 May 2025).*
+>*Additionally,  as a minor note, reference CGM[2] is a concurrent work that was made public on arXiv after our submission (22 May 2025).*
 
 ## 5. Weaknesses2【done】：The experiments only compare with OpenHands and SWE-Agent, but do not include newer repository-level methods like RepoGraph [1] or other Agents works, such as Agentless [3]. Adding such baselines would better position RepoMaster within the current literature.
 
@@ -336,7 +336,7 @@ SWE-bench leaderboard榜单均显示，这两个agent框架在Verified上持续�
 
 
 Thank you for your suggestion. We fully agree that comparing with more recent methods could further clarify RepoMaster's positioning. 
-However, for completing real-world end-to-end tasks in our benchmarks—which poses significant requirements and challenges for agent's comprehensive capabilities—many frameworks, including **RepoGraph**,  **lack the ability** to support full pipeline resolution.
+**However, for completing real-world end-to-end tasks in our benchmarks**—which poses significant requirements and challenges for agent's comprehensive capabilities—many frameworks, including **RepoGraph**,  **lack the ability** to support full pipeline resolution.
 
 In fact, **RepoGraph[1] is a technique which could be integrated into general agent frameworks, and it lacks true end-to-end task-solving capability**. Meanwhile, **Agentless[3] is an earlier work categorized as "procedural framework" instead of "agent framwork" in [1], and is less powerful and general than our primary baselines: OpenHands and SWE-Agent (identified as agent frameworks in [1])**.
 
