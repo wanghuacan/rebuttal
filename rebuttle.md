@@ -518,7 +518,11 @@ Additionally, we have uploaded our RepoMaster project code to the github reposit
 关于整体效果的权重敏感性分析，考虑到实验的时间成本较大，我们并没有系统地做一些定量分析，在后续的论文版本中我们可以补充更全面的实验分析结果。
 
 #### Context Window
-context window的设置是我们基于实验观察发现的经验值，当LLM总的context的上下文长度超过50k token后，推理能力逐渐下降，这会影响到后续的代码生成、代码修改和代码调试，所以我们优先考虑高信息密度的context。此外整体性能对这些因素不是很敏感，因为我们在LLM的context超过一定长度后，我们会进行过往执行轨迹的反思，同时对已有的探索过程进行最优路径抽取，只保留最有效的执行轨迹信息后，让LLM思考一个更好的解决方案，进行新的探索。这部分我们会设置最大回退重试次数为3。
+Context window的设置是我们基于实验观察发现的经验值：**LLM支持的最大上下文长度 ÷ 平均执行轮数 ≈ 8k tokens**。当单次交互的context超过这个阈值时，我们会对内容进行重点信息精炼，确保在有限窗口内保留最关键信息。
+
+此外，当Agent的整体chat history累积长度超过LLM支持最大上下文长度的2/3时，我们会启动**历史轨迹优化机制**：对已有的探索过程进行最优路径抽取，只保留历史上最有效的执行轨迹信息，然后让LLM基于精简后的上下文思考更优的解决方案，进行新一轮探索。
+
+这种设计基于我们的实验观察：**当LLM的总context长度超过一定token数后，推理能力会逐渐下降**，直接影响后续的代码生成、代码修改和代码调试的质量。通过动态的上下文管理和轨迹优化，我们能够在保持高推理质量的同时，支持长期的复杂任务执行。
 ### 9.2 EN
 
 Thank you for the suggestion. Due to space limitations, the details of parameter selection and sensitivity analysis were not included in the main text of the paper. We agree that these are very important and we should indeed expand on the experimental analysis process of our top-k parameter selection. We will supplement the experimental details in the appendix of subsequent paper versions.
@@ -546,7 +550,11 @@ Thank you for the suggestion. Due to space limitations, the details of parameter
 Experiments show that **Top-20** achieves a good balance between recall rate and efficiency, with diminishing returns from further increasing k values.
 
 #### Context Window
-The context window setting is an empirical value we discovered based on experimental observations. When the LLM's total context length exceeds 50k token, reasoning ability gradually declines, which affects subsequent code generation, code modification, and code debugging. Therefore, we prioritize high information density context. Additionally, overall performance is not very sensitive to these factors because when the LLM's context exceeds a certain length, we perform reflection on past execution trajectories, simultaneously extracting optimal paths from existing exploration processes, retaining only the most effective execution trajectory information, then having the LLM think of a better solution for new exploration. We set the maximum rollback retry count to 3 for this part.
+The context window setting is an empirical value discovered through experimental observations: **Maximum LLM context length ÷ Average execution rounds ≈ 8k tokens**. When the context of a single interaction exceeds this threshold, we perform focused information refinement to ensure that the most critical information is retained within the limited window.
+
+Furthermore, when the Agent's overall chat history accumulates beyond 2/3 of the LLM's maximum supported context length, we activate a **historical trajectory optimization mechanism**: extracting optimal paths from existing exploration processes, retaining only the most effective execution trajectory information from history, then having the LLM think of better solutions based on the streamlined context for new exploration rounds.
+
+This design is based on our experimental observation that **when the LLM's total context length exceeds a certain token count, reasoning ability gradually declines**, directly affecting the quality of subsequent code generation, code modification, and code debugging. Through dynamic context management and trajectory optimization, we can support long-term complex task execution while maintaining high reasoning quality.
 
 # Reviewer 77DM
 ## 10. Weakness (3) & (4)【done】: How does RepoMaster deal with stale or broken dependencies found during exploration? What are the assumptions on the quality of README or internal documentation? What happens when the README is missing or incorrect?
