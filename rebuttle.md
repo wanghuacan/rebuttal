@@ -167,47 +167,36 @@ For repositories where core components exceed the context threshold (**8k tokens
 
 ### 3.2 EN
 
-Thank you for the suggestion. We completely agree that we should indeed expand on the experimental analysis process of our **module-level importance scoring**. We will supplement the experimental details in the appendix of the subsequent paper.
+Thank you for the suggestion.
+First, we want to clarify that identifying the six features themselves—based on experimental observation and domain expertise—is fundamentally more important than their precise relative weighting.
 
-#### Experimental Design Process
+Our experiments demonstrated that, although weights may influence the recall rate of initially important files, this effect does not significantly impact the final end-to-end task success rate. For this reason, we did not emphasize fine-grained weight sensitivity in our main study.
 
-**1. Test Set Construction and Weight Optimization**
-- First, we manually constructed the core file modules of several repositories as our test set
-- Then we performed targeted optimization through the performance of different weight combination strategies in **RepoMaster** to improve the recall rate of important file sets
+We acknowledge that, due to page constraints, we were unable to present the detailed experimental process behind our module-level importance scoring in the current manuscript. We will supplement these details, including additional experimental analysis, in the appendix of future versions.
 
-**2. Dimension Screening and Ablation Experiments**
+#### Experimental Design and Feature Selection
+
+**1. Test Set Construction & Weight Optimization**
+- First, we manually constructed the core file modules from several repositories as our test set
+- Then we performed empirical optimization through the performance of different weight combination strategies in RepoMaster to improve the recall rate of important file sets
+
+**2. Feature Screening & Ablation**
 - Through experimental comparison, we removed scores from several evaluation dimensions with high overlap
-- We conducted simple **ablation experiments** on each single dimension strategy
-- Finally, we retained the **six evaluation dimensions** presented in the paper and gave them equal weights
-
-**3. Top-k Parameter Optimization**
-- We gradually increased the number of top-k modules
-- Finally, the **top-20 recall rate of core modules reached 70%**
-- Further increasing top-k did not yield significant recall benefits
-
-#### Top-k Module Recall Rate Experimental Results
-
-| Top-k  | Recall Rate (%) | Relative Improvement |
-|--------|----------------|---------------------|
-| Top-5  | 46.6           | -                   |
-| Top-10 | 60.0           | +13.4%              |
-| Top-20 | 70.0           | +10.0%              |
-| Top-30 | 73.3           | +3.3%               |
-
-Experiments show that **Top-20** achieves a good balance between recall rate and efficiency, with diminishing returns from further increasing k values.
+- We conducted simple ablation experiments on each single dimension strategy
+- Finally, we retained the six evaluation dimensions presented in the paper and gave them equal weights for both simplicity and interpretability.
 
 #### Regarding Weight Sensitivity Analysis
 
-Regarding overall effectiveness weight sensitivity analysis, considering the significant time cost of experiments, we did not systematically conduct quantitative analysis. In subsequent paper versions, we can supplement more comprehensive experimental analysis results.
+While we recognize the value of a comprehensive weight sensitivity analysis, systematically quantitatively evaluating all weight combinations would require substantial experimental cost, which we considered disproportionate to the incremental benefit for our main research focus. Nevertheless, we will include further analysis in the appendix of our revised submission.
 
-Additionally, we want to detail that in our overall algorithm framework design, the role of the evaluated **core modules** is to help the agent have a comprehensive understanding of the entire repository under limited context windows. This also serves as the **RepoMaster**'s autonomous exploration entry point for the entire repository, autonomously deciding whether to expand the search and read adjacent node files from the current file. Only after locating task-relevant code snippets or file information are they fed into the Agent's context to complete end-to-end task autonomous exploration and execution:
+Additionally, we want to detail that in our overall algorithm framework design, the role of the evaluated **core modules** is to help the agent have a comprehensive understanding of the entire repository under limited context windows. This also serves as the **RepoMaster's autonomous exploration entry point** for the entire repository, autonomously deciding whether to expand the search and read adjacent node files from the current file.
+Task-relevant code snippets or file information are incorporated into the agent’s context only after they are identified, supporting autonomous end-to-end exploration and execution.
 
 ```
 Search → Understand → Code Generation/Editing → Execute → Debug → Generate Verifiable Output
 ```
 
-
-
+Thank you again for the insightful feedback. We believe these clarifications and our planned appendix additions will further strengthen the paper.
 
 # Reviewer aqw3
 ## 4. Weaknesses1【done】：Many of RepoMaster's ideas e.g.repository graphs and context selection overlap with recent work. For example, the concurrent RepoGraph [1] system also builds a repository-level graph structure to guide LLM code agents. The CGM [2] approach similarly integrates a code graph into an LLM's attention. RepoMaster's novelty seems to lie mostly in the engineering of combining known techniques (AST traversal, call/dependency graphs, heuristic scoring) rather than introducing fundamentally new algorithms. As a result, its contribution feels somewhat incremental relative to these related methods.
@@ -604,36 +593,19 @@ We acknowledge this as an important direction for future work and plan to extend
 
 ### 12.1 EN
 
-Thank you for your valuable questions. The weights in our importance scoring scheme were **determined through systematic ablation experiments and optimization analysis**. We started with different weight combination strategies and optimized them based on the recall performance of important file identification. Through comprehensive experimental validation, we found that **equal weighting** achieved the optimal recall performance across different evaluation dimensions.
+The weights in our importance scoring scheme were manually set, not determined through systematic ablation experiments or large-scale optimization, **but rather informed by domain knowledge and extensive small-scale trials and empirical observation.**
 
-The detailed experimental analysis process is as follows:
+We initially explored various weight combinations and adjusted them to maximize the recall of important files during identification. However, comprehensive experimental validation showed that, while weights may affect the recall rate of initially important files, this influence does not significantly impact the final end-to-end task success rate. Therefore, we did not prioritize fine-grained weight sensitivity in our main study, and ultimately adopted equal weighting, which achieved satisfactory recall performance while keeping the scheme simple and interpretable.
+
+The detailed experimental process is as follows:
 
 #### Experimental Design Process
 
 **1. Test Set Construction and Weight Optimization**
-- First, we manually constructed the core file modules of several repositories as our test set
-- Then we performed targeted optimization through the performance of different weight combination strategies in **RepoMaster** to improve the recall rate of important file sets
+We manually constructed a test set of core file modules from several repositories, and empirically optimized the weights to improve recall of important files within RepoMaster.
 
 **2. Dimension Screening and Ablation Experiments**
-- Through experimental comparison, we removed scores from several evaluation dimensions with high overlap
-- We conducted simple **ablation experiments** on each single dimension strategy
-- Finally, we retained the **six evaluation dimensions** presented in the paper and gave them equal weights
-
-**3. Top-k Parameter Optimization**
-- We gradually increased the number of top-k modules
-- Finally, the **top-20 recall rate of core modules reached 70%**
-- Further increasing top-k did not yield significant recall benefits
-
-#### Top-k Module Recall Rate Experimental Results
-
-| Top-k  | Recall Rate (%) | Relative Improvement |
-|--------|----------------|---------------------|
-| Top-5  | 46.6           | -                   |
-| Top-10 | 60.0           | +13.4%              |
-| Top-20 | 70.0           | +10.0%              |
-| Top-30 | 73.3           | +3.3%               |
-
-Experiments show that **Top-20** achieves a good balance between recall rate and efficiency, with diminishing returns from further increasing k values.
+Through systematic comparison, we eliminated redundant dimensions with high overlap and conducted ablation experiments on each single feature. As a result, we retained the six features reported in the paper and assigned them equal weights for both simplicity and interpretability.
 
 #### GNNs or unsupervised learning for structural importance prediction
 It is a direction with great complementary potential, and we also look forward to exploring the possibilities of future technical integration. However, our current considerations are mainly from the following dimensions:
