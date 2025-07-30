@@ -321,15 +321,13 @@ To address the key challenge of limited context in agent applications, we propos
 
 ### 5.1 ZH
 
-感谢审稿人的宝贵建议。我们完全认同可以与更多最新方法进行比较，以更全面地展示**RepoMaster**的定位。以下说明我们的基线选择理由，并承诺在修订版中加入与**RepoGraph**和**Agentless**的补充性实验结果与讨论。
-
-我们选择**OpenHands**和**SWE-Agent**作为主要基线基于以下考虑：
+感谢审稿人的宝贵建议。我们完全认同可以与更多最新方法进行比较，以更全面地展示**RepoMaster**的定位。以下说明我们选择**OpenHands**和**SWE-Agent**作为主要基线的理由：
 
 **1. SOTA Agent框架地位**
 
-SWE-bench leaderboard榜单均显示，这两个agent框架在Verified上持续处于**SOTA水平**，而Agentless变体整体排名靠后。因此我们将OpenHands和SWE-Agent作为**"必须对齐"的强基线**，以确保对RepoMaster的定位公平而具代表性。
+SWE-bench leaderboard榜单均显示，这两个agent框架在Verified上持续处于**SOTA水平**（OpenHands达到70.4%，SWE-Agent达到66.4%），而Agentless变体整体排名靠后（任务解决率仅为50.8%），而RepoGraph则不在公开榜单上（其论文报告的效果仅为30.33%）。因此我们将OpenHands和SWE-Agent作为**"必须对齐"的强基线**，以确保对RepoMaster的定位公平而具代表性。
 
-**2. 端到端能力的完整性**
+**2. 端到端任务解决的能力**
 
 我们的任务设定要求在受控环境中对完整仓库进行以下端到端执行：
 
@@ -337,43 +335,51 @@ SWE-bench leaderboard榜单均显示，这两个agent框架在Verified上持续�
 搜索 → 理解 → 代码生成 → 执行 → 调试 → 任务验证输出
 ```
 
-并完成真实世界端到端任务，这对于Agent的综合能力有比较大的要求和挑战。
+并完成真实世界端到端任务，这对于Agent的综合能力有比较大的要求和挑战。相比之下，**RepoGraph缺乏这种端到端任务解决的能力**。
 
 在这一任务设定下：
-- **RepoGraph**：主要聚焦在代码修复任务上，即给定GitHub issue，在仓库内定位并修改代码以修复bug
-- **OpenHands与SWE-agent**：目前开源社区中最常用、最成熟且在SWE-bench Verified公开榜单上长期占据前列的通用Agent系统
+- **RepoGraph**：主要聚焦在代码修复任务上，即给定GitHub issue，在仓库内定位并修改代码以修复bug，**无法拓展到完整的端到端任务解决场景**
+- **OpenHands与SWE-agent**：目前开源社区中最常用、最成熟且在SWE-bench Verified公开榜单上长期占据前列的通用Agent系统，**具备完整的端到端任务解决能力**
+
 
 
 ### 5.2 EN
 
-Thank you for your valuable suggestion. We agree that comparisons with more recent methods can be conducted to more comprehensively demonstrate **RepoMaster**'s positioning. We commit to adding supplementary experimental results and discussions with **RepoGraph** and **Agentless** in the revision, but here we would like to first explain our baseline selection rationale: 
 
-<!-- We selected **OpenHands** and **SWE-Agent** as primary baselines based on the following considerations: -->
+Thank you for your suggestion. We fully agree that comparing with more recent methods could further clarify RepoMaster's positioning. 
+However, for completing real-world end-to-end tasks in our benchmarks—which poses significant requirements and challenges for agent's comprehensive capabilities—many frameworks, including **RepoGraph**,  **lack the ability** to support full pipeline resolution.
+
+In fact, **RepoGraph[1] is a technique which could be integrated into general agent frameworks, and it lacks true end-to-end task-solving capability**. Meanwhile, **Agentless[3] is an earlier work categorized as "procedural framework" instead of "agent framwork" in [1], and is less powerful and general than our primary baselines: OpenHands and SWE-Agent (identified as agent frameworks in [1])**.
+
+Below, we detail our baseline selection rationale:
 
 **1. SOTA Agent Framework Status**
 
-SWE-bench leaderboard rankings consistently show these two agent frameworks at **SOTA levels** on Verified, while Agentless variants rank lower overall. Therefore, we positioned OpenHands and SWE-Agent as **"must-align" strong baselines** to ensure fair and representative positioning of RepoMaster.
+SWE-bench leaderboard consistently ranks OpenHands and SWE-Agent at **SOTA levels** on Verified (OpenHands: 70.4%, SWE-Agent: 66.4%), in contrast, Agentless variants rank substantially lower (with only 50.8% task resolution rate), and RepoGraph is not on the public leaderboard (and, in fact, can not handle such task).
+In their own paper [1], Agentless + RepoGraph only achieved 29.67% (the best performance) on SWE-Bench-Lite. 
+Therefore, we positioned OpenHands and SWE-Agent as **"must-align" strong baselines** for fair and representative positioning of RepoMaster.
 
-**2. Completeness of End-to-End Capabilities**
+**2. End-to-End Task Resolution Capabilities**
 
-Our task setting requires the following end-to-end execution on complete repositories in controlled environments:
+Our task setting requires full end-to-end execution on complete repositories:
 
 ```
 Search → Understand → Code Generation → Execute → Debug → Task Verification Output
 ```
 
-And completing real-world end-to-end tasks, which poses significant requirements and challenges for Agent's comprehensive capabilities.
-
 Under this task setting:
-- **RepoGraph**: Primarily focuses on code repair tasks, i.e., given GitHub issues, locate and modify code within repositories to fix bugs
-- **OpenHands and SWE-agent**: Currently the most commonly used, mature general Agent systems in the open-source community that have long occupied top positions on the SWE-bench Verified public leaderboard
+- RepoGraph: Primarily focuses on code repair tasks, i.e., given GitHub issues, locate and modify code within repositories to fix bugs, **unable to extend to complete end-to-end task resolution scenarios**
+- OpenHands and SWE-agent: **Currently the most commonly used, daily-updated, mature general Agent systems** in the open-source community, long dominating the SWE-bench Verified public leaderboard, **with proven complete end-to-end task resolution capabilities**
+
 
 ## 6. Weaknesses3 & Limitations【Pending】：The proposed GitTaskBench contains only 18 repositories and 54 tasks (line 230-231). While it covers diverse domains, the relatively small size may limit the generality of the conclusions. A larger benchmark would better demonstrate the robustness of the method.
 
 ### 6.2 EN
 Thanks for your comment. 
 
-First, we'd like to kindly remind you that our RepoMaster evaluation covers **not only** GitTaskBench but also **MLE-R**—a revision of MLE-Bench-Lite—comprising 22 ML Kaggle tasks and 22×3 repositories. **In total, we evaluate 76 comprehensive, real-world tasks across 120 repositories.**
+First, we'd like to kindly remind you that our RepoMaster evaluation covers **not only** GitTaskBench but also **MLE-R**—a revision of MLE-Bench-Lite—comprising 22 ML Kaggle tasks and 22×3 repositories. 
+
+**In total, we evaluate 76 comprehensive, real-world tasks across 120 repositories.**
 
 Second, beyond task domain diversity, **the properties of our selected full-stack repositories in GitTaskBench are also highly varied and general:**
 - Repo Files: 7–1157 (Avg. 204)
@@ -381,6 +387,8 @@ Second, beyond task domain diversity, **the properties of our selected full-stac
 - Intra-repo Calls: 180–40,552 (Avg. 8,651)
 - Functions: 25–4,915 (Avg. 1,274.8)
 - Lines of Code: 0.58k–351.42k (Avg. 52.63k)
+
+These statistics demonstrate that GitTaskBench is diverse not only in task domains, but also in the repositories themselves—a critical aspect for evaluating repository-centric tasks.
 
 Third, we acknowledge your concern about task/scale. However, **existing comparable benchmarks at this complexity and comprehensiveness level are similarly scoped**:
 - Full MLE-Bench[1]: 72 ML tasks
@@ -465,7 +473,7 @@ Hi, 感谢您的兴趣，。我们的GitTaskBench是已经开源的，且其的�
 此外，我们已经在github仓库上传了我们的RepoMaster项目代码，我们会在后续论文版本中同步开源。
 ### 8.2 EN
 
-Hi, thank you for your interest. Our GitTaskBench is already open source, and its specific anonymous link has been placed in the currently submitted paper as reference [26]. However, it seems it was not provided as a footnote, which may have caused you to miss it. Please see reference [26]: GitTaskBench: Anonymous github repository. (All tasks and code for GitTaskBench are in the above anonymous GitHub link.)
+Hi, thank you for your interest. Our GitTaskBench is already open source, and its specific anonymous link has been placed in the currently submitted paper as reference [26]. However, it seems it was not provided as a footnote, which may have caused you to miss it. Please refer to reference [26]: GitTaskBench: Anonymous github repository. (All tasks and code for GitTaskBench are available in the above anonymous GitHub link.)
 
 Additionally, we have uploaded our RepoMaster project code to the github repository, and we will synchronously open source it in subsequent paper versions.
 
@@ -509,7 +517,7 @@ Additionally, we have uploaded our RepoMaster project code to the github reposit
 context window的设置是我们基于实验观察发现的经验值，当LLM总的context的上下文长度超过50k token后，推理能力逐渐下降，这会影响到后续的代码生成、代码修改和代码调试，所以我们优先考虑高信息密度的context。此外整体性能对这些因素不是很敏感，因为我们在LLM的context超过一定长度后，我们会进行过往执行轨迹的反思，同时对已有的探索过程进行最优路径抽取，只保留最有效的执行轨迹信息后，让LLM思考一个更好的解决方案，进行新的探索。这部分我们会设置最大回退重试次数为3。
 ### 9.2 EN
 
-Thank you for the suggestion. We completely agree that we should indeed expand on the experimental analysis process of our module-level importance scoring. We will supplement the experimental details in the appendix of subsequent paper versions.
+Thank you for the suggestion. 这部分细节的参数设置是如何选取的以及关于他们的sensitivity analysis我们因为篇幅原因没有放入论文的正文中。We agree that 他们是非常重要的 并且indeed expand on the experimental analysis process of our module-level importance scoring. We will supplement the experimental details in the appendix of subsequent paper versions.
 
 #### Experimental Design Process
 
