@@ -313,15 +313,13 @@ Rather than statically embedding graphs into attention. Figure 2 shows how this 
 
 ### 5.1 ZH
 
-感谢审稿人的宝贵建议。我们完全认同可以与更多最新方法进行比较，以更全面地展示**RepoMaster**的定位。以下说明我们的基线选择理由，并承诺在修订版中加入与**RepoGraph**和**Agentless**的补充性实验结果与讨论。
-
-我们选择**OpenHands**和**SWE-Agent**作为主要基线基于以下考虑：
+感谢审稿人的宝贵建议。我们完全认同可以与更多最新方法进行比较，以更全面地展示**RepoMaster**的定位。以下说明我们选择**OpenHands**和**SWE-Agent**作为主要基线的理由：
 
 **1. SOTA Agent框架地位**
 
-SWE-bench leaderboard榜单均显示，这两个agent框架在Verified上持续处于**SOTA水平**，而Agentless变体整体排名靠后。因此我们将OpenHands和SWE-Agent作为**"必须对齐"的强基线**，以确保对RepoMaster的定位公平而具代表性。
+SWE-bench leaderboard榜单均显示，这两个agent框架在Verified上持续处于**SOTA水平**（OpenHands达到70.4%，SWE-Agent达到66.4%），而Agentless变体整体排名靠后（任务解决率仅为50.8%），而RepoGraph则不在公开榜单上（其论文报告的效果仅为30.33%）。因此我们将OpenHands和SWE-Agent作为**"必须对齐"的强基线**，以确保对RepoMaster的定位公平而具代表性。
 
-**2. 端到端能力的完整性**
+**2. 端到端任务解决的能力**
 
 我们的任务设定要求在受控环境中对完整仓库进行以下端到端执行：
 
@@ -329,24 +327,22 @@ SWE-bench leaderboard榜单均显示，这两个agent框架在Verified上持续�
 搜索 → 理解 → 代码生成 → 执行 → 调试 → 任务验证输出
 ```
 
-并完成真实世界端到端任务，这对于Agent的综合能力有比较大的要求和挑战。
+并完成真实世界端到端任务，这对于Agent的综合能力有比较大的要求和挑战。相比之下，**RepoGraph缺乏这种端到端任务解决的能力**。
 
 在这一任务设定下：
-- **RepoGraph**：主要聚焦在代码修复任务上，即给定GitHub issue，在仓库内定位并修改代码以修复bug
-- **OpenHands与SWE-agent**：目前开源社区中最常用、最成熟且在SWE-bench Verified公开榜单上长期占据前列的通用Agent系统
+- **RepoGraph**：主要聚焦在代码修复任务上，即给定GitHub issue，在仓库内定位并修改代码以修复bug，**无法拓展到完整的端到端任务解决场景**
+- **OpenHands与SWE-agent**：目前开源社区中最常用、最成熟且在SWE-bench Verified公开榜单上长期占据前列的通用Agent系统，**具备完整的端到端任务解决能力**
 
 
 ### 5.2 EN
 
-Thank you for your valuable suggestion. We completely agree that comparisons with more recent methods can be conducted to more comprehensively demonstrate **RepoMaster**'s positioning. Here we explain our baseline selection rationale and commit to adding supplementary experimental results and discussions with **RepoGraph** and **Agentless** in the revision.
-
-We selected **OpenHands** and **SWE-Agent** as primary baselines based on the following considerations:
+Thank you for your valuable suggestion. We completely agree that comparisons with more recent methods can be conducted to more comprehensively demonstrate **RepoMaster**'s positioning. Here we explain the rationale for selecting **OpenHands** and **SWE-Agent** as primary baselines:
 
 **1. SOTA Agent Framework Status**
 
-SWE-bench leaderboard rankings consistently show these two agent frameworks at **SOTA levels** on Verified, while Agentless variants rank lower overall. Therefore, we positioned OpenHands and SWE-Agent as **"must-align" strong baselines** to ensure fair and representative positioning of RepoMaster.
+SWE-bench leaderboard rankings consistently show these two agent frameworks at **SOTA levels** on Verified (OpenHands achieving 70.4%, SWE-Agent achieving 66.4%), while Agentless variants rank lower overall (with only 50.8% task resolution rate), and RepoGraph is not on the public leaderboard (with reported performance of only 30.33% in their paper). Therefore, we positioned OpenHands and SWE-Agent as **"must-align" strong baselines** to ensure fair and representative positioning of RepoMaster.
 
-**2. Completeness of End-to-End Capabilities**
+**2. End-to-End Task Resolution Capabilities**
 
 Our task setting requires the following end-to-end execution on complete repositories in controlled environments:
 
@@ -354,11 +350,11 @@ Our task setting requires the following end-to-end execution on complete reposit
 Search → Understand → Code Generation → Execute → Debug → Task Verification Output
 ```
 
-And completing real-world end-to-end tasks, which poses significant requirements and challenges for Agent's comprehensive capabilities.
+And completing real-world end-to-end tasks, which poses significant requirements and challenges for Agent's comprehensive capabilities. In contrast, **RepoGraph lacks this end-to-end task resolution capability**.
 
 Under this task setting:
-- **RepoGraph**: Primarily focuses on code repair tasks, i.e., given GitHub issues, locate and modify code within repositories to fix bugs
-- **OpenHands and SWE-agent**: Currently the most commonly used, mature general Agent systems in the open-source community that have long occupied top positions on the SWE-bench Verified public leaderboard
+- **RepoGraph**: Primarily focuses on code repair tasks, i.e., given GitHub issues, locate and modify code within repositories to fix bugs, **unable to extend to complete end-to-end task resolution scenarios**
+- **OpenHands and SWE-agent**: Currently the most commonly used, mature general Agent systems in the open-source community that have long occupied top positions on the SWE-bench Verified public leaderboard, **with complete end-to-end task resolution capabilities**
 
 ## 6. Weaknesses3 & Limitations【Pending】：The proposed GitTaskBench contains only 18 repositories and 54 tasks (line 230-231). While it covers diverse domains, the relatively small size may limit the generality of the conclusions. A larger benchmark would better demonstrate the robustness of the method.
 
