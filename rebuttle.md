@@ -443,31 +443,22 @@ While more tasks can further enhance generality, our method’s capabilities are
 
 Thank you for raising this insightful question about **multi-language project** (such as C++, Java) extensibility.
 
-First, we apologize for the somewhat misleading description in the paper. In fact, we do not exclude operating on other types of files; all types of files are parsed for tree-based structure construction; we only emphasized “Python files” because the graph construction for file content is currently focused on them—this is simply because our selected repositories are all Python/PyTorch-based, and the tasks themselves are in the machine learning domain. However, this restriction can be easily and seamlessly removed, as it is not fundamental to our approach.
+First, we apologize for the somewhat misleading description in the paper. In fact, our approach does not exclude operating on other file types; all types of files are parsed for tree-based structure construction; we emphasized “Python files” simply because our selected repositories are all Python-based, and the tasks themselves are in the machine learning domain (most mainstream repositories we found in the deep learning area are Python-based, especially for ML tasks ).
 
-Second, our approach is designed to be **language-agnostic** and **can readily extend to additional programming languages**. Here we clarify the design principles and extensibility:
+Second, our approach is designed to be **language-agnostic** and **can readily extend to additional programming languages**.
+While we chose Python for evaluation because it dominates the deep learning and machine learning fields (consistent with our benchmark tasks), the Abstract Syntax Tree (AST) parsing used in the construction of Hierarchical Component Tree (HCT), Function Call Graph (FCG), and Module Dependency Graph (MDG), also applies to other most mainstream languages, including C++, Java, JavaScript, etc.
 
-#### 1. Language-Agnostic Architecture
+Third, our framework employs two complementary exploration strategies:
 
-While we chose **Python** for evaluation because it dominates the deep learning and machine learning fields (consistent with our benchmark tasks), our core approach is fundamentally language-agnostic. 
-Hierarchical Component Tree (HCT), Function Call Graph (FCG), and Module Dependency Graph (MDG) construction relies on Abstract Syntax Tree (AST) parsing, which applies to most mainstream languages, including C++, Java, JavaScript, etc.
+- **1. Graph-based Exploration**: For languages with rich structural information (e.g., Python, Java, C++)
+- **2. Tree-based Hierarchical Exploration**: As the primary exploration method for scripting languages (.sh) or structurally simple project files (.yaml, .json)
 
-#### 2. Complementary Exploration Mechanisms
-
-Our framework employs two complementary exploration strategies:
-
-- **2.1 Graph-based Exploration**: For languages with rich structural information (e.g., Python, Java, C++)
-- **2.2 Tree-based Hierarchical Exploration**: As the primary exploration method for scripting languages (.sh) or structurally simple project files (.yaml, .json)
-
-#### 3. Adaptive Strategy Selection
-
-This dual approach ensures robust performance across different language paradigms. Based on our empirical observations, **RepoMaster** adaptively selects the most appropriate strategy:
+This dual approach ensures robust performance across different language paradigms. Based on our empirical observations, RepoMaster adaptively selects the most appropriate strategy:
 - Uses **tree-based search** for simpler repositories
 - Uses **graph-based analysis** for complex projects with intricate dependencies
 
-#### 4. Future Extension Plans
-
-We acknowledge this as an important direction for future work and plan to extend the evaluation scope to multi-language repositories in the next version. **RepoMaster's modular design** makes this extension straightforward, and we anticipate similar performance improvements across different programming languages.
+**Future Extension Plans**:
+We acknowledge this as an important direction for future work and plan to extend the evaluation scope to multi-language repositories in the next version. RepoMaster's modular design makes this extension straightforward, and we anticipate similar performance improvements across different programming languages.
 
 
 ## 8. Q2【done】: Will the authors release the GitTaskBench tasks and code for RepoMaster?
@@ -560,18 +551,21 @@ This design is based on our experimental observation that **when the LLM's total
 ## 10. Weakness (3) & (4)【done】: How does RepoMaster deal with stale or broken dependencies found during exploration? What are the assumptions on the quality of README or internal documentation? What happens when the README is missing or incorrect?
 ### 10.1 EN
 We thank the reviewer for raising these important practical concerns. Indeed, handling stale dependencies and unreliable documentation are critical challenges for real-world repository utilization.
-Handling Stale/Broken Dependencies: RepoMaster incorporates robust error recovery mechanisms specifically designed for such scenarios. As demonstrated in our GitTaskBench experiments (Section E.2), when encountering missing dependencies (e.g., "ModuleNotFoundError"), RepoMaster:
-1. Automatically identifies and installs missing packages through iterative error analysis
-2. Adapts execution strategies when dependencies fail (e.g., switching from GPU to CPU versions)
-3. Leverages our hierarchical repository analysis to find alternative implementations when primary paths fail
 
-README Quality Assumptions: While READMEs provide valuable initial guidance, RepoMaster is explicitly designed NOT to rely solely on documentation. Our hierarchical repository analysis (Section 3.2) constructs three complementary structural representations (HCT, FCG, MDG) that provide ground-truth understanding independent of documentation quality. This is why RepoMaster significantly outperforms baseline methods that primarily follow README instructions.
-Missing/Incorrect Documentation: When documentation is absent or misleading, RepoMaster's exploration tools (Section 3.3.1) enable autonomous discovery through:
-1. Structural analysis to identify entry points and core components
-2. Dependency tracing to understand component relationships
-3. Iterative execution with feedback-based learning
+**Handling Stale/Broken Dependencies**: RepoMaster incorporates robust error recovery mechanisms specifically designed for such scenarios. As demonstrated in our GitTaskBench experiments (Section E.2), when encountering missing dependencies (e.g., "ModuleNotFoundError"), RepoMaster:
+1. Automatically identifies and installs missing packages through iterative error analysis;
+2. Adapts execution strategies when dependencies fail (e.g., switching from GPU to CPU versions);
+3. Leverages our hierarchical repository analysis to find alternative implementations when primary paths fail.
 
-The case study in Figure3 and Figure2 illustrates this capability - despite incomplete documentation, RepoMaster successfully completed the task through structural understanding and adaptive exploration, while baselines failed.
+**README Quality Assumptions**: While READMEs provide valuable initial guidance, RepoMaster is explicitly designed NOT to rely solely on documentation.
+In fact, encountering missing or unreliable documentation is common, as noted in the Introduction (Lines 39–43). Our hierarchical repository analysis (Section 3.2) constructs three complementary structural representations (HCT, FCG, MDG) that provide ground-truth understanding and prepare for exploratory tools, independent of documentation quality. This allows RepoMaster to significantly outperform baseline methods that primarily follow README instructions or read all the code, which consumes large context windows.
+
+**Missing/Incorrect Documentation**: When documentation is absent or misleading, RepoMaster's exploration tools (Section 3.3.1) enable autonomous discovery through:
+1. Structural analysis to identify entry points and core components;
+2. Dependency tracing to understand component relationships;
+3. Iterative execution with feedback-based learning.
+
+The case study in Figure3 and Figure2 illustrates this capability: despite incomplete documentation, RepoMaster successfully completed the task through structural understanding and adaptive exploration, while baselines failed.
 
 ## 11. Q1 & Weakness(1)【done】：Why restrict analysis to .py files only? Many practical projects involve configurations (.yaml, .json), scripts (.sh), or compiled extensions (.cpp). Does this limit applicability? No mention of how the model adapts or generalizes to diverse languages or non-Python repositories.
 ### 11.1 ZH
@@ -601,28 +595,16 @@ The case study in Figure3 and Figure2 illustrates this capability - despite inco
 
 ### 11.2 EN
 
-We thank the reviewer for raising this insightful question about **multi-language project** (such as C++, Java) extensibility.
+Hi, we are sorry the writing misleads you. In fact, our implementation is not limited to Python files—all types of files (including .yaml, .json, .sh, .cpp) are parsed for tree-based structure construction. We only emphasized “Python files” *simply because our selected repositories are all Python-based, and the tasks themselves are in the machine learning domain* (most mainstream repositories we found in the deep learning area are Python-based, especially for ML tasks).
 
-Our approach is designed to be **language-agnostic** and easily extensible to other programming languages. Here we clarify the design principles and extensibility:
+Specifically, our framework employs two complementary exploration strategies:
 
-**1. Language-Agnostic Architecture:**
+- Graph-based Exploration: For languages with rich structural information (e.g., Python, Java, C++)
+- Tree-based Hierarchical Exploration: As the primary exploration method for scripting languages (.sh) or structurally simple project files (.yaml, .json)
 
-While we chose Python for evaluation because it dominates the deep learning and machine learning fields (consistent with our benchmark tasks), our core approach is fundamentally language-agnostic. Hierarchical Component Tree (HCT), Function Call Graph (FCG), and Module Dependency Graph (MDG) construction relies on Abstract Syntax Tree (AST) parsing, which applies to most mainstream languages, including C++, Java, JavaScript, etc.
+While we chose Python for evaluation—given its dominance in deep learning / machine learning and alignment with our benchmark tasks—our core approach is designed fundamentally language-agnostic with broad applicability.
 
-**2. Complementary Exploration Mechanisms**
-
-Our framework employs two complementary exploration strategies:
-
-- **2.1 Graph-based Exploration**: For languages with rich structural information (e.g., Python, Java, C++)
-- **2.2 Tree-based Hierarchical Exploration**: As the primary exploration method for scripting languages (.sh) or structurally simple project files (.yaml, .json)
-
-**3. Adaptive Strategy Selection**
-
-This dual approach ensures robust performance across different language paradigms. Based on our empirical observations, **RepoMaster** adaptively selects the most appropriate strategy:
-- Uses **tree-based search** for simpler repositories
-- Uses **graph-based analysis** for complex projects with intricate dependencies
-
-**4. Future Extension Plans**
+The construction of the Hierarchical Component Tree (HCT), Function Call Graph (FCG), and Module Dependency Graph (MDG) relies on Abstract Syntax Tree (AST) parsing, **which applies to most mainstream languages, including C++, Java, JavaScript, etc.** In principle, our methods can be directly adapted to diverse languages and non‑Python repositories.
 
 We acknowledge this as an important direction for future work and plan to extend the evaluation scope to multi-language repositories in the next version. **RepoMaster's modular design** makes this extension straightforward, and we anticipate similar performance improvements across different programming languages.
 
