@@ -267,7 +267,9 @@ Thank you for your meticulous observations regarding the connections with RepoGr
 However, our **RepoMaster** differs fundamentally from **RepoGraph/CGM** in task problem definition, method design, and technical contributions:
 
 - **Task Level**: We focus on real, end-to-end tasks, not just code repair
-- **Technical Innovation and Contribution**: RepoMaster's core contribution is not in how to construct code graphs, but in using structured understanding as a tool for context-aware exploration, with the technical core being **task-driven static-dynamic collaboration and autonomous exploration and decision-making for information selection**, serving the **search→understand→generate→execute→debug→convergence closed loop** in real-world end-to-end tasks
+- **Technical Innovation and Contribution**: Our work is application-driven. All algorithms and approaches are designed to serve practical use
+  - RepoMaster's contribution **is not** in how to construct code graphs, **but** in using structured understanding as a tool for context-aware exploration. 
+  - The technical core is **task-driven static-dynamic collaboration, and autonomous exploration, and decision-making for information selection**, serving the **search→understand→generate→execute→debug→convergence closed loop** in real-world end-to-end tasks. 
 
 Experimental results prove that this methodological framework brings quantifiable significant effectiveness benefits and token efficiency improvements.
 
@@ -275,18 +277,17 @@ Experimental results prove that this methodological framework brings quantifiabl
 
 **RepoGraph and CGM** focus on code repair within single repositories (SWE-bench), while **RepoMaster** addresses more challenging task scenarios: reusing open-source repository complex project code to complete end-to-end real tasks, evaluated based on MLE-R/GitTaskBench, covering multi-domain, executable, automatically verifiable tasks.
 
-**Comparative Analysis:**
 - **RepoGraph/CGM**: Given GitHub issues, locate and modify code within repositories to fix bugs
 - **RepoMaster**: Given natural language tasks (e.g., "remove scratches from old photos"), requires:
   ```
   Retrieve suitable repository → Understand its functionality → Configure environment → Code generation → Execute debugging → Generate verifiable output
   ```
 
-Our evaluation on **GitTaskBench** (18 repositories, 54 tasks) and **MLE-R** (22 ML tasks) covers: Image processing, Video analysis, Speech recognition and other multimodal practical applications. Rather than just code repair. This difference in task complexity directly drives different technical approaches.
+Our evaluation on **GitTaskBench** (18 repositories, 54 tasks) and **MLE-R** (22 ML tasks) covers: Image processing, Video analysis, Speech recognition and other multimodal practical applications. Rather than just code repair. This difference in **task complexity** directly drives different technical approaches.
 
 #### 2. Core Technical Contributions
 
-RepoMaster was designed from the beginning with the goal of **"reusing open-source repositories to solve real-world end-to-end tasks"**, requiring not only repository understanding but also completing the entire task execution process under constrained context:
+RepoMaster was designed from the beginning with the goal of **"reusing open-source repositories to solve real-world end-to-end tasks"**, requiring not only repository understanding but also **completing the entire task execution process under constrained context**:
 
 **(1) Hybrid Structural Repository Mapping**
 
@@ -300,6 +301,11 @@ Under limited context, agents dynamically switch between the following phases:
 
 Rather than statically embedding graphs into attention. Figure 2 shows how this iterative process gradually locates and resolves practical issues like missing models and dependency errors.
 
+**(3) Context-aware Information Selection**
+
+To address the key challenge of limited context in agent applications, we propose programmer-inspired, multi-level information selection with reduction strategies for code, documentation, and feedback logs.
+
+
 #### 3. Significant Performance Advantages
 
 **GitTaskBench Experimental Results:**
@@ -308,6 +314,8 @@ Rather than statically embedding graphs into attention. Figure 2 shows how this 
 - Token consumption reduction: **95%** (154k vs 3094k)
 
 **Ablation experiments** (Table 3) prove each component has significant contribution, particularly after removing "context-aware exploration" performance dropped most (**-5.56%**), validating the effectiveness of our algorithmic framework.
+
+*Additionally,  as a minor note, reference CGM[2] is a concurrent work that was made public on arXiv after our submission (22 May 2025).*
 
 ## 5. Weaknesses2【done】：The experiments only compare with OpenHands and SWE-Agent, but do not include newer repository-level methods like RepoGraph [1] or other Agents works, such as Agentless [3]. Adding such baselines would better position RepoMaster within the current literature.
 
@@ -338,9 +346,9 @@ SWE-bench leaderboard榜单均显示，这两个agent框架在Verified上持续�
 
 ### 5.2 EN
 
-Thank you for your valuable suggestion. We completely agree that comparisons with more recent methods can be conducted to more comprehensively demonstrate **RepoMaster**'s positioning. Here we explain our baseline selection rationale and commit to adding supplementary experimental results and discussions with **RepoGraph** and **Agentless** in the revision.
+Thank you for your valuable suggestion. We agree that comparisons with more recent methods can be conducted to more comprehensively demonstrate **RepoMaster**'s positioning. We commit to adding supplementary experimental results and discussions with **RepoGraph** and **Agentless** in the revision, but here we would like to first explain our baseline selection rationale: 
 
-We selected **OpenHands** and **SWE-Agent** as primary baselines based on the following considerations:
+<!-- We selected **OpenHands** and **SWE-Agent** as primary baselines based on the following considerations: -->
 
 **1. SOTA Agent Framework Status**
 
@@ -362,8 +370,33 @@ Under this task setting:
 
 ## 6. Weaknesses3 & Limitations【Pending】：The proposed GitTaskBench contains only 18 repositories and 54 tasks (line 230-231). While it covers diverse domains, the relatively small size may limit the generality of the conclusions. A larger benchmark would better demonstrate the robustness of the method.
 
+### 6.2 EN
+Thanks for your comment. 
 
+First, we'd like to kindly remind you that our RepoMaster evaluation covers **not only** GitTaskBench but also **MLE-R**—a revision of MLE-Bench-Lite—comprising 22 ML Kaggle tasks and 22×3 repositories. **In total, we evaluate 76 comprehensive, real-world tasks across 120 repositories.**
 
+Second, beyond task domain diversity, **the properties of our selected full-stack repositories in GitTaskBench are also highly varied and general:**
+- Repo Files: 7–1157 (Avg. 204)
+- Intra-repo Dependencies: 33–6979 (Avg. 1242.7)
+- Intra-repo Calls: 180–40,552 (Avg. 8,651)
+- Functions: 25–4,915 (Avg. 1,274.8)
+- Lines of Code: 0.58k–351.42k (Avg. 52.63k)
+
+Third, we acknowledge your concern about task/scale. However, **existing comparable benchmarks at this complexity and comprehensiveness level are similarly scoped**:
+- Full MLE-Bench[1]: 72 ML tasks
+- ML-Bench-A[2]: 55 (for script) + 13 (for code) repo-level ML-related tasks
+- MLAgentBench[3]: 13 ML experiments
+- SWE-Bench[4] (smaller-granularity tasks, repair program): 12 Python repos
+- M3ToolEval[5] (multi-tool, multi-turn calling): 82 tasks, 5 domains
+While more tasks can further enhance generality, our method’s capabilities are rigorously validated on two strong, diverse benchmarks, supporting robust and generalizable conclusions.
+- PaperBench[6]: 20 tasks/repos/papers.
+
+>[1] Jun Shern Chan, et al. MLE-bench: Evaluating Machine Learning Agents on Machine Learning Engineering. 2024  
+[2] Tang, Xiangru, et al. ML-Bench: Evaluating Large Language Models and Agents for Machine Learning Tasks on Repository-Level Code. 2023  
+[3] Huang, Qian, et al. MLAgentBench: Evaluating Language Agents on Machine Learning Experimentation. 2023  
+[4] Yang, John, et al. SWE-bench: Can Language Models Resolve Real-World GitHub Issues? 2023  
+[5] Wang, Xingyao, et al. Executable Code Actions Elicit Better LLM Agents. 2024  
+[6] Starace, Giulio, et al. PaperBench: Evaluating AI's Ability to Replicate AI Research. 2025
 
 
 ## 7. Q1【done】: The implementation filters to Python files. Would the approach extend easily to, e.g., multi-language projects (C++, Java) on GitHub?
