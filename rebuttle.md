@@ -413,12 +413,14 @@ While more tasks can further enhance generality, our method’s capabilities are
 
 感谢审稿人就**多语言项目**（如C++、Java）可扩展性提出的深刻问题。
 
-我们的方法旨在**与语言无关**，并易于扩展到其他编程语言。这里我们阐明了设计原理和可扩展性：
+首先我们抱歉论文中的描述表达有些误导，事实上，我们并不是不对其他类型文件进行操作，而仅仅是为了强调对于文件内部内容的图的构建时候，是面向“Python files”————因为我们的仓库在收集、选取时候就是选取的python/pytorch-based的仓库，任务也领域也是机器学习相关。然而，可以丝滑无痛取消这一限制，或者这一限制并不是必须的。
+
+其次，我们的方法本身就旨在**与语言无关**，并确实易于扩展到其他编程语言。这里我们阐明了设计原理和可扩展性：
 
 #### 1. 与语言无关的架构
 
 虽然我们选择**Python**进行评估是因为它在深度学习和机器学习领域占据主导地位（这与我们的基准测试任务一致），但我们的核心方法从根本上来说与语言无关。
-**层次结构分析（HCT）**、**函数调用图（FCG）**和**模块依赖图（MDG）**的构建依赖于抽象语法树（AST）解析, 该解析适用于大多数主流语言，包括C++、Java、JavaScript等
+**层次结构分析（HCT）**、**函数调用图（FCG）**和**模块依赖图（MDG**的构建依赖于抽象语法树（AST）解析, 该解析适用于大多数主流语言，包括C++、Java、JavaScript等
 
 #### 2. 互补探索机制
 
@@ -441,7 +443,9 @@ While more tasks can further enhance generality, our method’s capabilities are
 
 Thank you for raising this insightful question about **multi-language project** (such as C++, Java) extensibility.
 
-Our approach is designed to be **language-agnostic** and easily extensible to other programming languages. Here we clarify the design principles and extensibility:
+First, we apologize for the somewhat misleading description in the paper. In fact, we do not exclude operating on other types of files; all types of files are parsed for tree-based structure construction; we only emphasized “Python files” because the graph construction for file content is currently focused on them—this is simply because our selected repositories are all Python/PyTorch-based, and the tasks themselves are in the machine learning domain. However, this restriction can be easily and seamlessly removed, as it is not fundamental to our approach.
+
+Second, our approach is designed to be **language-agnostic** and **can readily extend to additional programming languages**. Here we clarify the design principles and extensibility:
 
 #### 1. Language-Agnostic Architecture
 
