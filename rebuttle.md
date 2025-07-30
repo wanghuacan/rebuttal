@@ -521,20 +521,15 @@ Additionally, we have uploaded our RepoMaster project code to the github reposit
 context window的设置是我们基于实验观察发现的经验值，当LLM总的context的上下文长度超过50k token后，推理能力逐渐下降，这会影响到后续的代码生成、代码修改和代码调试，所以我们优先考虑高信息密度的context。此外整体性能对这些因素不是很敏感，因为我们在LLM的context超过一定长度后，我们会进行过往执行轨迹的反思，同时对已有的探索过程进行最优路径抽取，只保留最有效的执行轨迹信息后，让LLM思考一个更好的解决方案，进行新的探索。这部分我们会设置最大回退重试次数为3。
 ### 9.2 EN
 
-Thank you for the suggestion. 这部分细节的参数设置是如何选取的以及关于他们的sensitivity analysis我们因为篇幅原因没有放入论文的正文中。We agree that 他们是非常重要的 并且indeed expand on the experimental analysis process of our module-level importance scoring. We will supplement the experimental details in the appendix of subsequent paper versions.
+Thank you for the suggestion. Due to space limitations, the details of parameter selection and sensitivity analysis were not included in the main text of the paper. We agree that these are very important and we should indeed expand on the experimental analysis process of our top-k parameter selection. We will supplement the experimental details in the appendix of subsequent paper versions.
 
-#### Experimental Design Process
+#### Top-k Parameter Selection Process
 
-**1. Test Set Construction and Weight Optimization**
+**1. Test Set Construction**
 - First, we manually constructed the core file modules of several repositories as our test set
-- Then we performed targeted optimization through the performance of different weight combination strategies in **RepoMaster** to improve the recall rate of important file sets
+- Then we evaluated different top-k values to optimize the recall rate of important file sets
 
-**2. Dimension Screening and Ablation Experiments**
-- Through experimental comparison, we removed scores from several evaluation dimensions with high overlap
-- We conducted simple **ablation experiments** on each single dimension strategy
-- Finally, we retained the **six evaluation dimensions** presented in the paper and gave them equal weights
-
-**3. Top-k Parameter Optimization**
+**2. Top-k Parameter Optimization**
 - We gradually increased the number of top-k modules
 - Finally, the **top-20 recall rate of core modules reached 70%**
 - Further increasing top-k did not yield significant recall benefits
@@ -549,10 +544,6 @@ Thank you for the suggestion. 这部分细节的参数设置是如何选取的�
 | Top-30 | 73.3           | +3.3%               |
 
 Experiments show that **Top-20** achieves a good balance between recall rate and efficiency, with diminishing returns from further increasing k values.
-
-#### Regarding Weight Sensitivity Analysis
-
-Regarding overall effectiveness weight sensitivity analysis, considering the significant time cost of experiments, we did not systematically conduct quantitative analysis. In subsequent paper versions, we can supplement more comprehensive experimental analysis results.
 
 #### Context Window
 The context window setting is an empirical value we discovered based on experimental observations. When the LLM's total context length exceeds 50k token, reasoning ability gradually declines, which affects subsequent code generation, code modification, and code debugging. Therefore, we prioritize high information density context. Additionally, overall performance is not very sensitive to these factors because when the LLM's context exceeds a certain length, we perform reflection on past execution trajectories, simultaneously extracting optimal paths from existing exploration processes, retaining only the most effective execution trajectory information, then having the LLM think of a better solution for new exploration. We set the maximum rollback retry count to 3 for this part.
