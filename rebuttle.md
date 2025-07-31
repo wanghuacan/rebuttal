@@ -792,35 +792,30 @@ Thank you for raising this critical question regarding **AIDE**. While AIDE demo
 
 **1. Fundamental Task Differences**
 
-The key reason is that **AIDE** and **RepoMaster** address fundamentally different problems:
+**AIDE** and **RepoMaster** address fundamentally different problems:
 
-- **1.1 AIDE**: Designed specifically for generating code from scratch for Kaggle competitions, with highly customized workflows to meet the specific requirements of Kaggle tasks
-- **1.2 RepoMaster**: Aimed from the beginning at "reusing open-source repositories to solve real-world tasks end-to-end", requiring not only repository understanding but also completing the full process of **search→understand→code generation/editing→execute→debug→generate verifiable output** under constrained context
+- **AIDE**: Designed specifically for generating code from scratch for Kaggle competitions, with highly customized workflows to meet the specific requirements of Kaggle tasks
+- **RepoMaster**: Aimed from the beginning at "reusing open-source repositories to solve real-world tasks end-to-end", requiring not only repository understanding but also completing the full process of **search→understand→code generation/editing→execute→debug→generate verifiable output** under constrained context
 
-**2. Limitations in AIDE's Architecture Capabilities**
+**2. AIDE's Architecture Limitations**
 
-**AIDE** lacks the fundamental functions necessary for solving tasks end-to-end for complex code projects, including:
+**AIDE** lacks fundamental functions for end-to-end task solving on complex code projects:
+- Structural analysis of existing codebases
+- Cross-file dependency tracking and navigation  
+- Selective code modification rather than pure code generation
 
-- **a)** Structural analysis of existing codebases
-- **b)** Cross-file dependency tracking and navigation
-- **c)** Selective code modification and generation rather than pure code generation
+**3. Baseline Selection Rationale**
 
-**3. Rationality of Baseline Selection**
-
-While **SWE-Agent**, **OpenHands**, and our **RepoMaster** are all general-purpose Code Agent architectures, ensuring fair comparison.
-
-Additionally, the **SWE-bench leaderboard** for code repair tasks consistently shows these two agent frameworks at SOTA levels on Verified. Therefore, we positioned **OpenHands** and **SWE-Agent** as "must-align" strong baselines to ensure fair and representative positioning of RepoMaster.
+**SWE-Agent** and **OpenHands** are general-purpose Code Agent architectures like **RepoMaster**, ensuring fair comparison. Both consistently achieve SOTA levels on SWE-bench Verified. Therefore, we positioned **OpenHands** and **SWE-Agent** as "must-align" strong baselines to ensure fair and representative positioning of RepoMaster.
 
 **4. Supplementary Experimental Results**
 
-Finally, in reference to your concerns and suggestions about comparability, we conducted additional experiments with AIDE using **DeepSeek V3** on the same **22 tasks** on mle-bench:
+Finally, in reference to reviewer's concerns and suggestions about comparability, we conducted additional experiments with AIDE using **DeepSeek V3** on the same **22 tasks** on mle-bench:
 
 - **Valid Submissions:** RepoMaster **(86.36%)** vs AIDE **(63.64%)**
 - **Gold Medals:** RepoMaster **(13.64%)** vs AIDE **(4.55%)**
 
-Our advantage is very obvious, and we will subsequently add these explanations to the paper.
-
-#### Comparison of experimental results
+Our advantage is significant, and we will add these explanations to the paper.
 
 | Model | Submission | Valid Sub | >Median | Bronze | Silver | Gold | Total |
 |-------|------------|-----------|---------|--------|--------|------|-------|
