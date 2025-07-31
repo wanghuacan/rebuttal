@@ -726,23 +726,21 @@ This multi-layer approach ensures **RepoMaster** maintains both robustness and e
 
 ### 14.2 EN
 
-Thank you for raising this important question. Let me detail the rationale and methodology for **MLE-R subset selection**:
+Thank you for raising this important question. Let me detail the rationale for **MLE-R subset selection**:
 
 #### 1. Computational Resources and Time Considerations
 
-Through preliminary testing, we found that the average runtime for a single task exceeds **10 hours** (including repository search, structural analysis, code generation, and multiple iterative debugging sessions). Considering the need for complete evaluation across **3 different LLMs** and **3 frameworks**, completing all 75 tasks would require approximately **6,750 hours** of computation time and substantial API resource consumption. Therefore, we selected the **OpenAI officially provided MLE-Bench-lite** as our experimental evaluation test set (22 tasks).
+Each task requires **10+ hours** (repository search, analysis, code generation, and debugging). Evaluating all 75 tasks across **3 LLMs** and **3 frameworks** would need ~**6,750 hours** and substantial API resource consumption. Therefore, we selected the **OpenAI officially provided MLE-Bench-lite** (22 tasks).
 
 #### 2. Adopting Standardized Subset
 
 **MLE-Bench-lite** is a carefully designed representative subset containing tasks from different domains (CV, NLP, ASR, etc.) and different difficulty levels, capable of fully reflecting agent capabilities in machine learning engineering tasks. This choice ensures our evaluation has comparability and standardization.
 
-During the use of MLE-Bench-lite, we found that 2 tasks (detecting-insults-in-social-commentary and the-icml-2013-whale-challenge-right-whale-redux) could not be downloaded due to Kaggle data access permission issues. To maintain evaluation completeness, we selected 2 alternative tasks from the complete MLE-Bench (chaii-hindi-and-tamil-question-answering and tgs-salt-identification-challenge). These two tasks are comparable to the replaced tasks in domain coverage and difficulty, thus maintaining the total of 22 tasks unchanged.
-
-#### 3. Representativeness Guarantee
+We replaced 2 inaccessible tasks (due to Kaggle data permissions: detecting-insults-in-social-commentary, the-icml-2013-whale-challenge-right-whale-redux) with comparable alternatives, maintaining 22 tasks total.
 
 Despite being a subset, our MLE-R still covers diverse ML task types, including image classification, text classification, time series prediction, etc., capable of comprehensively evaluating agent repository utilization capabilities. The specific Competition ID list has been detailed in appendix Tables 6-10.
 
-We believe this choice achieves a good balance between experimental feasibility and evaluation comprehensiveness, while maintaining comparability with existing work. In future work, we are willing to extend to more tasks for evaluation.
+This choice balances experimental feasibility with evaluation comprehensiveness while maintaining comparability with existing work.
 
 ## 15. q2【done】: As for other baselines, why wasn't AIDE [1] used? It holds the current state of the art on MLE-Bench.
 
