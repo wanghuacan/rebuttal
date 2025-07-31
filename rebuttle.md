@@ -730,7 +730,7 @@ Thank you for raising this important question. Let me detail the rationale and m
 
 #### 1. Computational Resources and Time Considerations
 
-Through preliminary testing, we found that the average runtime for a single task exceeds **10 hours** (including repository search, structural analysis, code generation, and multiple iterative debugging sessions). Considering the need for complete evaluation across **3 different LLMs** (GPT-4o, Claude 3.5, DeepSeek V3) and **3 frameworks** (RepoMaster, OpenHands, SWE-Agent), completing all 75 tasks would require approximately **6,750 hours** of computation time and substantial API resource consumption. Therefore, we selected the **OpenAI officially provided MLE-Bench-lite** as our experimental evaluation test set (22 tasks).
+Through preliminary testing, we found that the average runtime for a single task exceeds **10 hours** (including repository search, structural analysis, code generation, and multiple iterative debugging sessions). Considering the need for complete evaluation across **3 different LLMs** and **3 frameworks**, completing all 75 tasks would require approximately **6,750 hours** of computation time and substantial API resource consumption. Therefore, we selected the **OpenAI officially provided MLE-Bench-lite** as our experimental evaluation test set (22 tasks).
 
 #### 2. Adopting Standardized Subset
 
@@ -775,17 +775,17 @@ We believe this choice achieves a good balance between experimental feasibility 
 
 最后，参考您对可比性的担忧和建议，我们使用**DeepSeek V3**对mle-bench上相同的**22个任务**进行了AIDE的额外实验：
 
-- **Valid Submissions:** RepoLearner **(86.36%)** vs AIDE **(63.64%)**
-- **Gold Medals:** RepoLearner **(13.64%)** vs AIDE **(4.55%)**
+- **Valid Submissions:** RepoMaster **(86.36%)** vs AIDE **(63.64%)**
+- **Gold Medals:** RepoMaster **(13.64%)** vs AIDE **(4.55%)**
 
 Our advantage is very obvious, and we will subsequently add these explanations to the paper.
 
 #### 实验结果对比
 
-| Model | Make submission | Valid Submissions | Above Median | Bronze Medals | Silver Medals | Gold Medals | Total Medals |
-|-------|----------------|-------------------|--------------|---------------|---------------|-------------|--------------|
-| RepoLearner (deepseek) | 95.45% | 86.36% | 36.36% | 4.55% | 4.55% | 13.64% | 22.73% |
-| AIDE (deepseek) | 63.64% | 63.64% | 18.18% | 0% | 0% | 4.55% | 4.55% |
+| Model | Submission | Valid Sub | >Median | Bronze | Silver | Gold | Total |
+|-------|------------|-----------|---------|--------|--------|------|-------|
+| RepoMaster | 95.45% | 86.36% | 36.36% | 4.55% | 4.55% | 13.64% | 22.73% |
+| AIDE | 63.64% | 63.64% | 18.18% | 0% | 0% | 4.55% | 4.55% |
 
 
 ### 15.2 EN
@@ -817,17 +817,17 @@ Additionally, the **SWE-bench leaderboard** for code repair tasks consistently s
 
 Finally, in reference to your concerns and suggestions about comparability, we conducted additional experiments with AIDE using **DeepSeek V3** on the same **22 tasks** on mle-bench:
 
-- **Valid Submissions:** RepoLearner **(86.36%)** vs AIDE **(63.64%)**
-- **Gold Medals:** RepoLearner **(13.64%)** vs AIDE **(4.55%)**
+- **Valid Submissions:** RepoMaster **(86.36%)** vs AIDE **(63.64%)**
+- **Gold Medals:** RepoMaster **(13.64%)** vs AIDE **(4.55%)**
 
 Our advantage is very obvious, and we will subsequently add these explanations to the paper.
 
-#### 实验结果对比
+#### Comparison of experimental results
 
-| Model | Make submission | Valid Submissions | Above Median | Bronze Medals | Silver Medals | Gold Medals | Total Medals |
-|-------|----------------|-------------------|--------------|---------------|---------------|-------------|--------------|
-| RepoLearner (deepseek) | 95.45% | 86.36% | 36.36% | 4.55% | 4.55% | 13.64% | 22.73% |
-| AIDE (deepseek) | 63.64% | 63.64% | 18.18% | 0% | 0% | 4.55% | 4.55% |
+| Model | Submission | Valid Sub | >Median | Bronze | Silver | Gold | Total |
+|-------|------------|-----------|---------|--------|--------|------|-------|
+| RepoMaster | 95.45% | 86.36% | 36.36% | 4.55% | 4.55% | 13.64% | 22.73% |
+| AIDE | 63.64% | 63.64% | 18.18% | 0% | 0% | 4.55% | 4.55% |
 
 
 ## 16. q3: I would have liked to see a more comprehensive description of GitTaskBench in the paper. Looking through the Appendix/repo, I found the tasks to be interesting, and I think a comprehensive description in the paper is warranted. I'm interested in the tasks in GitTaskBench, and would like to know more. For example, in some of the tasks, it seems like there could be several correct answers (image coloring, style transfer). How are correct solutions determined? 
@@ -933,70 +933,32 @@ These efforts are part of our continuous work series, with experiments already u
 
 #### 1. 任务难度的长尾分布特性
 
-**GitTaskBench**的设计反映了真实世界任务的难度分布：
-- 从简单的**PDF解析**
-- 到**图像风格迁移任务**
-- 再到复杂的**VideoPose3D姿态估计**
-
-难度呈**指数级增长**。即使整体完成率达到70%，剩余的30%任务代表着需要：
-- 深度代码理解
-- 复杂依赖管理
-- 端到端任务解决的挑战
-
-这种**长尾分布**确保了benchmark的持续相关性。且对于真实世界的端到端任务执行需求来说，**70%仅仅是一个及格线**。
+**GitTaskBench**反映真实世界任务的难度分布：从简单**PDF解析**到复杂**VideoPose3D姿态估计**，难度呈**指数级增长**。即使整体完成率达70%，剩余30%任务仍需要深度代码理解、复杂依赖管理和端到端任务解决能力。这种**长尾分布**确保benchmark持续相关性，**70%仅是及格线**。
 
 #### 2. 性能提升的边际递减效应
 
-我们的实验分析揭示了一个关键洞察：
-
-当我们将模型从**GPT-4o**升级到**Claude 3.5**时：
-- 任务通过率从**40.74%**提升到**62.96%**
-
-然而，深入分析这**22%**的提升发现：
-- **>50%**的提升来自环境配置和依赖安装的成功率提高
-- **<20%**的提升来自核心的代码库探索和任务执行能力的提升
-
-这表明模型在处理复杂代码库的自主探索和端到端执行方面仍有巨大改进空间，而这正是**GitTaskBench的核心评估目标**。
+模型从**GPT-4o**升级到**Claude 3.5**时任务通过率从**40.74%**提升到**62.96%**。但深入分析这**22%**提升发现：**>50%**来自环境配置和依赖安装成功率提高，**<20%**来自核心代码库探索和任务执行能力提升。这表明模型在处理复杂代码库的自主探索方面仍有巨大改进空间。
 
 #### 3. 算法设计的关键作用
 
-即使使用相同的**Claude 3.5**模型，不同框架的表现差异巨大：
+使用相同**Claude 3.5**模型，不同框架表现差异巨大：
 
 | 框架 | 任务通过率 | Token消耗 |
 |------|------------|-----------|
 | **RepoMaster** | **62.96%** | **154k tokens** |
 | **OpenHands** | **24.07%** | **3094k tokens** |
 
-这种显著的**token效率差异**和近**3倍的性能差距**表明，即使底层模型能力提升，**Agent算法框架设计与效率约束**仍然至关重要。
+显著的**token效率差异**和近**3倍性能差距**表明，即使底层模型能力提升，**Agent算法框架设计与效率约束**仍至关重要。
 
-参考**SWE-Bench**代码修复任务评估的发展轨迹：**Gemini 2.5 Pro**达到**63.8%**的代码修复率，而最新的Claude4模型已接近**80%**，这说明纯代码修复任务正在被快速解决。
-
-**GitTaskBench的独特价值：**
-通过要求agents处理完整的：
-- 代码库理解
-- 依赖管理
-- 错误诊断
-- 端到端任务解决
-
-提供了更全面的评估维度。这也会是**Code Agent下一阶段的核心优化方向**之一，同时我们后续也会定期引入反映最新开发实践的任务，来保持GitTaskBench的挑战性。
+参考**SWE-Bench**：**Gemini 2.5 Pro**达到**63.8%**，Claude4接近**80%**，这说明纯代码修复任务正在被快速解决。**GitTaskBench**通过要求agents处理完整的代码库理解、依赖管理、错误诊断、端到端任务解决，提供更全面评估维度。这是**Code Agent下一阶段核心优化方向**，同时后续我们也将定期引入新任务保持挑战性。
 
 ### 20.2 EN
 
-Thank you for your thoughtful consideration of **GitTaskBench's scalability**. We have systematically evaluated the potential impact of employing newer models such as o4-mini and Gemini 2.5 Pro. Our experimental analysis reveals:
+Thank you for your thoughtful consideration of **GitTaskBench's scalability**. We have evaluated the potential impact of newer models:
 
 #### 1. Long-tail Distribution Characteristics of Task Difficulty
 
-**GitTaskBench**'s design reflects the difficulty distribution of real-world tasks:
-- From simple **PDF parsing**
-- To **image style transfer tasks**
-- To complex **VideoPose3D pose estimation**
-
-The difficulty exhibits **exponential growth**. Even if the overall completion rate reaches 70%, the remaining 30% of tasks represent challenges requiring:
-- Deep code understanding
-- Complex dependency management
-- End-to-end task resolution challenges
-
-This **long-tail distribution** ensures the benchmark's continued challenge. For real-world end-to-end task execution demands, **70% is merely a passing grade**.
+**GitTaskBench** reflects real-world task difficulty distribution: from simple **PDF parsing** to complex **VideoPose3D pose estimation**, with **exponential growth** in difficulty. Even if overall completion rate reaches 70%, the remaining 30% tasks still require deep code understanding, complex dependency management, and end-to-end task resolution capabilities. This **long-tail distribution** ensures benchmark's continued relevance, where **70% is merely a passing grade**.
 
 #### 2. Diminishing Returns of Performance Improvements
 
@@ -1009,21 +971,17 @@ However, in-depth analysis of this **22%** improvement revealed:
 - **>50%** of the improvement came from increased success rates in environment configuration and dependency installation
 - **<20%** of the improvement came from enhanced core codebase exploration and task execution capabilities
 
-This indicates that models still have enormous room for improvement in handling autonomous exploration and end-to-end execution of complex codebases, which is precisely **GitTaskBench's core evaluation objective**.
+This indicates that models still have enormous room for improvement in handling autonomous exploration and end-to-end execution of complex codebases.
 
 #### 3. Critical Role of Algorithm Design
 
-Even using the same **Claude 3.5** model, different frameworks showed dramatic performance differences:
+Using the same **Claude 3.5** model, different frameworks showed dramatic performance differences:
 
 | Framework | Task Pass Rate | Token Consumption |
 |-----------|---------------|-------------------|
 | **RepoMaster** | **62.96%** | **154k tokens** |
 | **OpenHands** | **24.07%** | **3094k tokens** |
 
-This significant **token efficiency difference** and nearly **3x performance gap** demonstrate that even as underlying model capabilities improve, **Agent algorithm framework design and efficiency constraints** remain crucial.
+Significant **token efficiency difference** and nearly **3x performance gap** demonstrate that even as underlying model capabilities improve, **Agent algorithm framework design and efficiency constraints** remain crucial.
 
-Referencing the development trajectory of **SWE-Bench** code repair task evaluation: **Gemini 2.5 Pro** achieved **63.8%** code repair rate, while the latest Claude4 model approaches **80%**, indicating that pure code repair tasks are being rapidly solved.
-
-**GitTaskBench's Unique Value:** By requiring agents to handle complete: Codebase understanding, Dependency management, Error diagnosis, End-to-end task resolution
-
-It provides more comprehensive evaluation dimensions. This will also be one of **Code Agent's core optimization directions in the next phase**, and we will subsequently regularly introduce tasks reflecting the latest development practices to maintain GitTaskBench's challenge level.
+Referencing **SWE-Bench**: **Gemini 2.5 Pro** achieved **63.8%**, Claude4 approaches **80%**, indicating pure code repair tasks are being rapidly solved. **GitTaskBench** by requiring agents to handle complete codebase understanding, dependency management, error diagnosis, and end-to-end task resolution, provides more comprehensive evaluation dimensions. This is **Code Agent's core optimization direction in the next phase**, and we will regularly introduce new tasks to maintain challenge level.
