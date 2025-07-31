@@ -790,10 +790,7 @@ Our advantage is very obvious, and we will subsequently add these explanations t
 
 Thank you for raising this critical question regarding **AIDE**. While AIDE demonstrates superior performance on the original MLE-Bench, we would like to explain the rationale behind its exclusion from our evaluation baseline.
 
-**1. Fundamental Task Differences**
-
-**AIDE** and **RepoMaster** address fundamentally different problems:
-
+**1. AIDE and RepoMaster address fundamentally different problems**
 - **AIDE**: Designed specifically for generating code from scratch for Kaggle competitions, with highly customized workflows to meet the specific requirements of Kaggle tasks
 - **RepoMaster**: Aimed from the beginning at "reusing open-source repositories to solve real-world tasks end-to-end", requiring not only repository understanding but also completing the full process of **search→understand→code generation/editing→execute→debug→generate verifiable output** under constrained context
 
@@ -810,7 +807,7 @@ Thank you for raising this critical question regarding **AIDE**. While AIDE demo
 
 **4. Supplementary Experimental Results**
 
-Finally, in reference to reviewer's concerns and suggestions about comparability, we conducted additional experiments with AIDE using **DeepSeek V3** on the same **22 tasks** on mle-bench:
+Additionally, in reference to reviewer's concerns and suggestions about comparability, we conducted additional experiments with AIDE using **DeepSeek V3** on the same **22 tasks** on mle-bench:
 
 - **Valid Submissions:** RepoMaster **(86.36%)** vs AIDE **(63.64%)**
 - **Gold Medals:** RepoMaster **(13.64%)** vs AIDE **(4.55%)**
