@@ -904,17 +904,15 @@ We sincerely thank the reviewer for providing valuable feedback on the clarity o
 
 ### 19.2 EN
 
-Thank you for your suggestion and interest in our work! Your perspective on testing RepoMaster on **SWE-Bench** is very insightful. We completely agree that the large codebases in SWE-Bench (with numerous files and lines of code) are exactly the scenarios our **Hybrid Hierarchical Analysis + Code Exploration** method aims to address.
+Thank you for your suggestion and interest in our work! Your perspective on testing RepoMaster on **SWE-Bench** is very insightful. We completely agree that the large codebases in SWE-Bench are exactly the scenarios our **Hybrid Hierarchical Analysis + Code Exploration** method aims to address.
 
 **Future Work Planning:**
 
-We have added **SWE-Bench validation** to our near-term roadmap and will submit our results upon completion.
-
-**Ongoing Research Directions:**
+We have added **SWE-Bench verify** to our near-term roadmap and will submit our results upon completion.
 
 Additionally, our ongoing work includes:
-- Training RepoMaster's agent reasoning capabilities into foundation models through **reinforcement learning**
-- We hope RepoMaster's complex repository understanding and exploration capabilities, particularly the **Hybrid Hierarchical Analysis + Code Exploration** mechanism, will outperform existing systems (such as Claude Code) on complex codebase development tasks
+- Integrating RepoMaster's agent reasoning capabilities into foundation models through **reinforcement learning**
+- We expect RepoMaster's complex repository understanding and exploration capabilities, particularly the **Hybrid Hierarchical Analysis + Code Exploration** mechanism, to outperform existing systems (such as Claude Code) on complex codebase development tasks
 
 These efforts are part of our continuous work series, with experiments already underway. We look forward to sharing more progress in the future.
 
